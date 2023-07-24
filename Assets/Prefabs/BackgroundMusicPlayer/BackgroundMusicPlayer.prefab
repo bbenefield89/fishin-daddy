@@ -144,3 +144,4 @@ MonoBehaviour:
   backgroundMusicFiles:
   - {fileID: 8300000, guid: 491382c143761bf478d6bfbbca5669d5, type: 3}
   audioSource: {fileID: 1588069801156681901}
+  shouldPlay: 0

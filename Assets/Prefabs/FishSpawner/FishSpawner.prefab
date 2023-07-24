@@ -49,4 +49,5 @@ MonoBehaviour:
   fishObject: {fileID: 2675454740675003719, guid: d0543769d7987a3498e52040aa2e8b0b, type: 3}
   tier1SpawnDistance: 10
   tier2SpawnDistance: 20
+  fishSpawnAmount: 1
   timeBetweenSpawn: 5

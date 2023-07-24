@@ -10,6 +10,9 @@ public class BackgroundMusicController : MonoBehaviour
     [Tooltip("The Audio Source component attached to this GameObject")]
     public AudioSource audioSource;
 
+    [Tooltip("For dev purposes so I don't hear the same music over and over")]
+    public bool shouldPlay = true;
+
     private void Start()
     {
         if (audioSource == null)
@@ -20,7 +23,7 @@ public class BackgroundMusicController : MonoBehaviour
 
     private void Update()
     {
-        if (!audioSource.isPlaying)
+        if (!audioSource.isPlaying && shouldPlay)
         {
             PlayRandomSong();
         }

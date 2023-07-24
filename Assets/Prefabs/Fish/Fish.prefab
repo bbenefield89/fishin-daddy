@@ -307,8 +307,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1797ea62a911878468c0436d45566379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fishWrapper: {fileID: 2675454740675003719}
+  fishObject: {fileID: 2675454740675003719}
   fishHookedTextObj: {fileID: 7219821305162113920}
+  fishSpawner: {fileID: 8949770369762514785, guid: 9776d8eff96cc294b840ba6d866f0e3b, type: 3}
 --- !u!114 &8085932463931663212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,7 +325,8 @@ MonoBehaviour:
   swimSpeed: 1
   timeUntilNextSwim: 5
   swimAreaCenter: {x: 0, y: 0, z: 0}
-  swimAreaSize: {x: 10, y: 1, z: 10}
+  swimDistance: 10
+  fishToGroundOffset: 1
 --- !u!1 &8372127861208553983
 GameObject:
   m_ObjectHideFlags: 0
