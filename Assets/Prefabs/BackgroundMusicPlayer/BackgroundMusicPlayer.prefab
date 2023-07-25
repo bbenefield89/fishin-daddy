@@ -45,7 +45,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -142,6 +142,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backgroundMusicFiles:
-  - {fileID: 8300000, guid: 491382c143761bf478d6bfbbca5669d5, type: 3}
+  - {fileID: 8300000, guid: 1b1590e7f6ed50648bb613f63e2f1770, type: 3}
   audioSource: {fileID: 1588069801156681901}
-  shouldPlay: 0
+  shouldPlay: 1

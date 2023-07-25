@@ -193,7 +193,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782915}
-  m_LocalRotation: {x: 0.099578165, y: -0.05272758, z: 0.0052842405, w: 0.9936177}
+  m_LocalRotation: {x: 0.099578194, y: -0.052727625, z: 0.0052842465, w: 0.9936177}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -277,7 +277,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90573892}
-  m_LocalRotation: {x: 0.06341935, y: -0.05288477, z: 0.0033654307, w: 0.9965791}
+  m_LocalRotation: {x: 0.06341935, y: -0.052884735, z: 0.0033654284, w: 0.9965791}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -496,7 +496,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290646728}
-  m_LocalRotation: {x: 0.081488304, y: -0.052814983, z: 0.00432428, w: 0.9952646}
+  m_LocalRotation: {x: 0.081488304, y: -0.052815016, z: 0.004324283, w: 0.9952646}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1040,7 +1040,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.06341936, y: -0.0528848, z: 0.0033654324, w: 0.9965792}
+  m_LocalRotation: {x: 0.06341936, y: -0.05288473, z: 0.0033654277, w: 0.9965792}
   m_LocalPosition: {x: 0.8572599, y: 2.19, z: -8.054509}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1538,6 +1538,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2412261749939438608, guid: fb628c960ccb4d9418c42d0f41d55ff8, type: 3}
+      propertyPath: backgroundMusicFiles.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 1b1590e7f6ed50648bb613f63e2f1770, type: 3}
     - target: {fileID: 3176215881825778429, guid: fb628c960ccb4d9418c42d0f41d55ff8, type: 3}
       propertyPath: m_RootOrder
       value: 5
