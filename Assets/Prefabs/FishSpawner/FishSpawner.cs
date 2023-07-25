@@ -27,6 +27,7 @@ public class FishSpawner : MonoBehaviour
             {
                 GameObject newFish = Instantiate(fishObject);
                 newFish.name = "Fish_" + fish.Count.ToString();
+                newFish.GetComponentInChildren<FishMover>().tier = 1;
                 newFish.transform.position = DetermineSpawnPos();
                 fish.Add(newFish);
             }

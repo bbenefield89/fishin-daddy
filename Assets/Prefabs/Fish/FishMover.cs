@@ -1,5 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+
+public enum BoundaryType
+{
+    MIN,
+    MAX,
+}
 
 public class FishMover : MonoBehaviour
 {
@@ -13,19 +20,18 @@ public class FishMover : MonoBehaviour
     public Vector3 swimAreaCenter = Vector3.zero;
 
     [Tooltip("The size of the area in which the fish can move")]
-    public float swimDistance = 10f;
+    public float swimDistance = 5f;
 
     [Tooltip("An offset to prevent fish from getting to close to the ground")]
-    public float fishToGroundOffset = 1f;
+    public float boundaryOffset = 1f;
 
-    private GameObject waterObject;
+    public int tier;
+
     private Vector3 targetPosition;
-    private Bounds swimArea;
+    private delegate Vector3 CheckAxisMethods(Dictionary<string, float> boundaries);
 
     private void Start()
     {
-        waterObject = GameObject.Find(Prefabs.WATER);
-        swimArea = waterObject.GetComponent<BoxCollider>().bounds;
         StartCoroutine(MoveFish());
     }
 
@@ -39,16 +45,10 @@ public class FishMover : MonoBehaviour
             // Swim towards the target position
             while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
             {
-                Vector3 newPosition = Vector3.MoveTowards(
+                transform.position = Vector3.MoveTowards(
                     transform.position,
                     targetPosition,
                     swimSpeed * Time.deltaTime);
-
-                // Make sure the new position is within the swim area
-                if (swimArea.Contains(newPosition))
-                {
-                    transform.position = newPosition;
-                }
 
                 yield return null;
             }
@@ -62,66 +62,114 @@ public class FishMover : MonoBehaviour
     {
         GameObject groundObject = GameObject.Find(Prefabs.GROUND);
         Bounds groundBounds = groundObject.GetComponent<BoxCollider>().bounds;
-        float[] possibleX = new float[2]
+
+        float prevBoundaryMinZ = CalcPrevBoundary(groundBounds.center.z, groundBounds.extents.z, BoundaryType.MIN);
+        float prevBoundaryMaxZ = CalcPrevBoundary(groundBounds.center.z, groundBounds.extents.z, BoundaryType.MAX);
+
+        float prevBoundaryMinX = CalcPrevBoundary(groundBounds.center.x, groundBounds.extents.x, BoundaryType.MIN);
+        float prevBoundaryMaxX = CalcPrevBoundary(groundBounds.center.x, groundBounds.extents.x, BoundaryType.MAX);
+
+        Dictionary<string, float> boundaries = new Dictionary<string, float>
         {
-                Random.Range(groundBounds.min.x - fishToGroundOffset, swimDistance * -1),
-                Random.Range(groundBounds.max.x + fishToGroundOffset, swimDistance),
+            { "prevBoundaryMinZ", prevBoundaryMinZ },
+            { "nextBoundaryMinZ", CalcNextBoundary(prevBoundaryMinZ, BoundaryType.MIN) },
+
+            { "prevBoundaryMaxZ", prevBoundaryMaxZ },
+            { "nextBoundaryMaxZ", CalcNextBoundary(prevBoundaryMaxZ, BoundaryType.MAX) },
+
+            { "prevBoundaryMinX", prevBoundaryMinX },
+            { "nextBoundaryMinX", CalcNextBoundary(prevBoundaryMinX, BoundaryType.MIN) },
+
+            { "prevBoundaryMaxX", prevBoundaryMaxX },
+            { "nextBoundaryMaxX", CalcNextBoundary(prevBoundaryMaxX, BoundaryType.MAX) },
         };
 
-        float[] possibleZ = new float[2]
+        CheckAxisMethods[] axisFunctions = new CheckAxisMethods[]
         {
-                Random.Range(groundBounds.min.z - fishToGroundOffset, swimDistance * -1),
-                Random.Range(groundBounds.max.z + fishToGroundOffset, swimDistance),
+            CheckZAxisFirst,
+            CheckXAxisFirst,
         };
 
-        float randomX = possibleX[Random.Range(0, 2)];
-        float randomZ = possibleZ[Random.Range(0, 2)];
-        Vector3 swimToPos = new Vector3(randomX, 0f, randomZ);
-
-        return swimToPos;
+        return axisFunctions[Random.Range(0, 2)](boundaries);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private float CalcPrevBoundary(float centerAxis, float extentsAxis, BoundaryType boundaryType)
     {
-        if (other.CompareTag("Ground"))
-        {
-            Vector3 directionFromGround = transform.position - other.transform.position;
-            directionFromGround.Normalize();
-            targetPosition = transform.position + directionFromGround;
-        }
+        return boundaryType == BoundaryType.MIN ?
+            (centerAxis + extentsAxis) * tier * -1 - boundaryOffset :
+            (centerAxis + extentsAxis) * tier + boundaryOffset;
     }
 
-    //private Vector3 DetermineSwimToPos()
-    //{
-    //    Vector3 swimToPos;
-    //    bool hitGround;
+    private float CalcNextBoundary(float prevBoundary, BoundaryType boundaryType)
+    {
+        return boundaryType == BoundaryType.MIN ?
+            prevBoundary - swimDistance + (boundaryOffset * 2) :
+            prevBoundary + swimDistance - (boundaryOffset * 2);
+    }
 
-    //    do
-    //    {
-    //        float randomX = Random.Range(swimArea.min.x, swimArea.max.x);
-    //        float randomZ = Random.Range(swimArea.min.z, swimArea.max.z);
-    //        swimToPos = new Vector3(randomX, 0f, randomZ);
+    private Vector3 CheckZAxisFirst(Dictionary<string, float> boundaries)
+    {
+        float nextXPos;
+        float nextZPos;
 
-    //        // Perform a capsule cast from the fish's current position to the new position
-    //        Vector3 top = transform.position + Vector3.up * 0.5f; // Top of the capsule
-    //        Vector3 bottom = transform.position + Vector3.down * 0.5f; // Bottom of the capsule
-    //        float radius = 0.5f; // Radius of the capsule
+        if (transform.position.z < boundaries["prevBoundaryMinZ"])
+        {
+            nextZPos = Random.Range(boundaries["nextBoundaryMinZ"], boundaries["prevBoundaryMinZ"]);
+            nextXPos = Random.Range(boundaries["nextBoundaryMinX"], boundaries["nextBoundaryMaxX"]);
+        }
+        else if (transform.position.z > boundaries["prevBoundaryMaxZ"])
+        {
+            nextZPos = Random.Range(boundaries["prevBoundaryMaxZ"], boundaries["nextBoundaryMaxZ"]);
+            nextXPos = Random.Range(boundaries["nextBoundaryMinX"], boundaries["nextBoundaryMaxX"]);
+        }
+        else
+        {
+            nextZPos = Random.Range(boundaries["nextBoundaryMinZ"], boundaries["nextBoundaryMaxZ"]);
 
-    //        RaycastHit hit;
-    //        if (Physics.CapsuleCast(top, bottom, radius, swimToPos - transform.position, out hit))
-    //        {
-    //            // If the capsule hit the Ground object, we need to pick a new position
-    //            hitGround = hit.collider.gameObject.CompareTag(Tags.GROUND);
-    //        }
-    //        else
-    //        {
-    //            // If the capsule didn't hit anything, the position is good
-    //            hitGround = false;
-    //        }
-    //    }
-    //    while (hitGround); // Keep picking new positions until we find one that doesn't hit the Ground
+            if (transform.position.x < boundaries["prevBoundaryMinX"])
+            {
+                nextXPos = Random.Range(boundaries["prevBoundaryMinX"], boundaries["nextBoundaryMinX"]);
+            }
+            else
+            {
+                nextXPos = Random.Range(boundaries["prevBoundaryMaxX"], boundaries["nextBoundaryMaxX"]);
+            }
+        }
 
-    //    return swimToPos;
-    //}
+        return new Vector3(nextXPos, transform.position.y, nextZPos);
+    }
+
+
+    private Vector3 CheckXAxisFirst(Dictionary<string, float> boundaries)
+    {
+        float nextXPos;
+        float nextZPos;
+
+        if (transform.position.x < boundaries["prevBoundaryMinX"])
+        {
+            nextXPos = Random.Range(boundaries["nextBoundaryMinX"], boundaries["prevBoundaryMinX"]);
+            nextZPos = Random.Range(boundaries["nextBoundaryMinZ"], boundaries["nextBoundaryMaxZ"]);
+        }
+        else if (transform.position.x > boundaries["prevBoundaryMaxX"])
+        {
+            nextXPos = Random.Range(boundaries["prevBoundaryMaxX"], boundaries["nextBoundaryMaxX"]);
+            nextZPos = Random.Range(boundaries["nextBoundaryMinZ"], boundaries["nextBoundaryMaxZ"]);
+        }
+        else
+        {
+            nextXPos = Random.Range(boundaries["nextBoundaryMinZ"], boundaries["nextBoundaryMaxZ"]);
+
+            if (transform.position.z < boundaries["prevBoundaryMinZ"])
+            {
+                nextZPos = Random.Range(boundaries["prevBoundaryMinZ"], boundaries["nextBoundaryMinZ"]);
+            }
+            else
+            {
+                nextZPos = Random.Range(boundaries["prevBoundaryMaxZ"], boundaries["nextBoundaryMaxZ"]);
+            }
+        }
+
+        return new Vector3(nextXPos, transform.position.y, nextZPos);
+    }
 
 }
