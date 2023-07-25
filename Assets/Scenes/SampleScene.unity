@@ -193,7 +193,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782915}
-  m_LocalRotation: {x: 0.099714376, y: 0.008798794, z: -0.0008817958, w: 0.9949768}
+  m_LocalRotation: {x: 0.099578165, y: -0.05272758, z: 0.0052842405, w: 0.9936177}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -277,7 +277,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90573892}
-  m_LocalRotation: {x: 0.0635061, y: 0.00882502, z: -0.0005615981, w: 0.99794227}
+  m_LocalRotation: {x: 0.06341935, y: -0.05288477, z: 0.0033654307, w: 0.9965791}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -416,7 +416,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 289857453}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.1432492, y: 2.19, z: -8.098734}
+  m_LocalPosition: {x: 0.8572599, y: 2.19, z: -8.054509}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -496,7 +496,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290646728}
-  m_LocalRotation: {x: 0.08159977, y: 0.008813413, z: -0.00072160724, w: 0.99662596}
+  m_LocalRotation: {x: 0.081488304, y: -0.052814983, z: 0.00432428, w: 0.9952646}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1040,8 +1040,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.0635061, y: 0.008825001, z: -0.00056159706, w: 0.9979423}
-  m_LocalPosition: {x: -0.1432492, y: 2.19, z: -8.098734}
+  m_LocalRotation: {x: 0.06341936, y: -0.0528848, z: 0.0033654324, w: 0.9965792}
+  m_LocalPosition: {x: 0.8572599, y: 2.19, z: -8.054509}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1410,7 +1410,7 @@ PrefabInstance:
       objectReference: {fileID: 77466190}
     - target: {fileID: 2539454657142227634, guid: 9776d8eff96cc294b840ba6d866f0e3b, type: 3}
       propertyPath: fishSpawnAmount
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8229020571673646375, guid: 9776d8eff96cc294b840ba6d866f0e3b, type: 3}
       propertyPath: m_RootOrder

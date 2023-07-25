@@ -31,7 +31,7 @@ Transform:
   - {fileID: 4245343768579947941}
   - {fileID: 8835534484311801039}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5222003416478070430
 GameObject:
@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 2512753034356625718}
   - component: {fileID: 529722385728691918}
   - component: {fileID: 2396217229484089807}
+  - component: {fileID: 2314204893645327466}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Ground
@@ -270,6 +271,27 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 10, y: 2.220446e-16, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &2314204893645327466
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5715908268569895682}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 11, y: 2.220446e-16, z: 11}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6055774158698060542
 GameObject:

@@ -81,6 +81,16 @@ public class FishMover : MonoBehaviour
         return swimToPos;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Ground"))
+        {
+            Vector3 directionFromGround = transform.position - other.transform.position;
+            directionFromGround.Normalize();
+            targetPosition = transform.position + directionFromGround;
+        }
+    }
+
     //private Vector3 DetermineSwimToPos()
     //{
     //    Vector3 swimToPos;
