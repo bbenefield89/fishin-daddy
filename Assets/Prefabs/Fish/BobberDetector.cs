@@ -1,15 +1,13 @@
-using System.Linq;
-using TMPro;
 using UnityEngine;
 
 public class BobberDetector : MonoBehaviour
 {
     public GameObject fishObject;
-    public TextMeshProUGUI fishHookedTextObj;
 
     private GameObject fishSpawner;
     private GameObject fishCounterCanvas;
     private AudioSource fishHookedAudio;
+    private bool isFishHooked = false;
 
     private void Start()
     {
@@ -20,8 +18,6 @@ public class BobberDetector : MonoBehaviour
 
     private void Update()
     {
-        bool isFishHooked = fishHookedTextObj.text != "";
-
         if (isFishHooked && Input.GetMouseButtonDown(1))
         {
             CatchFish();
@@ -39,7 +35,7 @@ public class BobberDetector : MonoBehaviour
     {
         if (other.CompareTag(Tags.BOBBER))
         {
-            fishHookedTextObj.text = "!!!";
+            isFishHooked = true;
             fishHookedAudio.Play();
         }
     }

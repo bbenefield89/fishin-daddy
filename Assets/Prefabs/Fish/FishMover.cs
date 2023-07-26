@@ -10,24 +10,15 @@ public enum BoundaryType
 
 public class FishMover : MonoBehaviour
 {
-    [Tooltip("How fast this fish can swim")]
     public float swimSpeed = 1f;
-
-    [Tooltip("Time until the fish picks a new spot to swim towards")]
     public float timeUntilNextSwim = 5f;
-
-    [Tooltip("The center of the area in which the fish can move")]
-    public Vector3 swimAreaCenter = Vector3.zero;
-
-    [Tooltip("The size of the area in which the fish can move")]
     public float swimDistance = 5f;
-
-    [Tooltip("An offset to prevent fish from getting to close to the ground")]
     public float boundaryOffset = 1f;
-
     public int tier;
 
+    private Vector3 oldPos;
     private Vector3 targetPosition;
+
     private delegate Vector3 CheckAxisMethods(Dictionary<string, float> boundaries);
 
     private void Start()
@@ -40,7 +31,11 @@ public class FishMover : MonoBehaviour
         while (true)
         {
             // Determine a new target position
+            Vector3 oldPosition = transform.position;
+            oldPos = transform.position;
             targetPosition = DetermineSwimToPos();
+
+            RotateFish();
 
             // Swim towards the target position
             while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
@@ -57,6 +52,7 @@ public class FishMover : MonoBehaviour
             yield return new WaitForSeconds(timeUntilNextSwim);
         }
     }
+
 
     private Vector3 DetermineSwimToPos()
     {
@@ -172,4 +168,35 @@ public class FishMover : MonoBehaviour
         return new Vector3(nextXPos, transform.position.y, nextZPos);
     }
 
+    private void RotateFish()
+    {
+        if (Mathf.Abs(oldPos.x - targetPosition.x) > Mathf.Abs(oldPos.z - targetPosition.z))
+        {
+            // Moving more in the X direction
+            if (oldPos.x < targetPosition.x)
+            {
+                // Moving in positive X direction
+                transform.eulerAngles = new Vector3(-90, 0, 90);
+            }
+            else
+            {
+                // Moving in negative X direction
+                transform.eulerAngles = new Vector3(-90, 0, -90);
+            }
+        }
+        else
+        {
+            // Moving more in the Z direction
+            if (oldPos.z < targetPosition.z)
+            {
+                // Moving in positive Z direction
+                transform.eulerAngles = new Vector3(-90, 0, 0);
+            }
+            else
+            {
+                // Moving in negative Z direction
+                transform.eulerAngles = new Vector3(-90, 0, 180);
+            }
+        }
+    }
 }
