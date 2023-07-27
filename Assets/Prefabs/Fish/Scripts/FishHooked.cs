@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public class BobberDetector : MonoBehaviour
+public class FishHooked : MonoBehaviour
 {
     public GameObject fishObject;
+    public GameObject exclamationMarks;
 
     private GameObject fishSpawner;
     private GameObject fishCounterCanvas;
@@ -37,6 +38,9 @@ public class BobberDetector : MonoBehaviour
         {
             isFishHooked = true;
             fishHookedAudio.Play();
+
+            GameObject exclamationMarksInstatiated = Instantiate(exclamationMarks);
+            exclamationMarksInstatiated.transform.SetParent(fishObject.transform, false);
         }
     }
 }

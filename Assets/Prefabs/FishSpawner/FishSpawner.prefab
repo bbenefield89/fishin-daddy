@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterObject: {fileID: 0}
   groundObject: {fileID: 0}
-  fishObject: {fileID: 5352175724620620461, guid: e50788369dbf99f4abcd9c74e2e79dfc, type: 3}
+  fishObject: {fileID: 260260553294357464, guid: 55db020157d4ce24494ba6d9ddd499e0, type: 3}
   tier1SpawnDistance: 10
   tier2SpawnDistance: 20
   fishSpawnAmount: 5

@@ -40,7 +40,12 @@ public class FishMover : MonoBehaviour
             // Swim towards the target position
             while (Vector3.Distance(transform.position, targetPosition) > 0.01f)
             {
-                transform.position = Vector3.MoveTowards(
+                //transform.position = Vector3.MoveTowards(
+                //    transform.position,
+                //    targetPosition,
+                //    swimSpeed * Time.deltaTime);
+
+                transform.parent.position = Vector3.MoveTowards(
                     transform.position,
                     targetPosition,
                     swimSpeed * Time.deltaTime);
@@ -176,12 +181,12 @@ public class FishMover : MonoBehaviour
             if (oldPos.x < targetPosition.x)
             {
                 // Moving in positive X direction
-                transform.eulerAngles = new Vector3(-90, 0, 90);
+                transform.eulerAngles = new Vector3(0, -90, 0);
             }
             else
             {
                 // Moving in negative X direction
-                transform.eulerAngles = new Vector3(-90, 0, -90);
+                transform.eulerAngles = new Vector3(0, 90, 0);
             }
         }
         else
@@ -190,12 +195,12 @@ public class FishMover : MonoBehaviour
             if (oldPos.z < targetPosition.z)
             {
                 // Moving in positive Z direction
-                transform.eulerAngles = new Vector3(-90, 0, 0);
+                transform.eulerAngles = new Vector3(0, 180, 0);
             }
             else
             {
                 // Moving in negative Z direction
-                transform.eulerAngles = new Vector3(-90, 0, 180);
+                transform.eulerAngles = new Vector3(0, 0, 0);
             }
         }
     }
