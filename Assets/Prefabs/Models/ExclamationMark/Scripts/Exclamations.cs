@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Exclamations : MonoBehaviour
@@ -10,5 +9,11 @@ public class Exclamations : MonoBehaviour
         Vector3 targetPos = player.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(targetPos);
         transform.rotation = rotation;
+
+        foreach (Transform t in transform)
+        {
+            ExclamationMark exclamationMarkScript = t.GetComponent<ExclamationMark>();
+            StartCoroutine(exclamationMarkScript.Animate(0));
+        }
     }
 }
