@@ -330,8 +330,6 @@ GameObject:
   - component: {fileID: 6907318901698765845}
   - component: {fileID: 8240455912935738817}
   - component: {fileID: 3082394647918898820}
-  - component: {fileID: 703277969232930197}
-  - component: {fileID: 5807444703233408137}
   - component: {fileID: 3582613841367291697}
   m_Layer: 0
   m_Name: PCModel
@@ -455,33 +453,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &703277969232930197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5737017442073360134}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d89dd2c21c42d7d41997f6fc452dd9a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gravity: -9.81
---- !u!114 &5807444703233408137
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5737017442073360134}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc441587dc9eb4948be0a519ee438416, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 0}
-  movementSpeed: 5
 --- !u!114 &3582613841367291697
 MonoBehaviour:
   m_ObjectHideFlags: 0
