@@ -36,11 +36,21 @@ public class FishHooked : MonoBehaviour
     {
         if (other.CompareTag(Tags.BOBBER))
         {
-            isFishHooked = true;
-            fishHookedAudio.Play();
+            bool isFishInterested = Random.Range(0, 2) == 0 ? false : true;
 
-            GameObject exclamationMarksInstatiated = Instantiate(exclamationMarks);
-            exclamationMarksInstatiated.transform.SetParent(fishObject.transform, false);
+            if (isFishInterested)
+            {
+                FishMover fishMover = GetComponent<FishMover>();
+                StartCoroutine(fishMover.MoveTowardsBobber());
+            }
         }
+    }
+
+    public void HookFish()
+    {
+        isFishHooked = true;
+        fishHookedAudio.Play();
+        GameObject exclamationMarksInstatiated = Instantiate(exclamationMarks);
+        exclamationMarksInstatiated.transform.SetParent(fishObject.transform, false);
     }
 }
