@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class BobberMove : MonoBehaviour
 {
@@ -99,5 +100,7 @@ public class BobberMove : MonoBehaviour
         hasBeenCasted = false;
         transform.position = bobberReturnPosition.position;
         transform.parent = bobberReturnPosition;
+        FishManager.Instance.IsFishHooked = false;
     }
+
 }
