@@ -201,3 +201,4 @@ MonoBehaviour:
   nibbleTiming:
     min: 0.3
     max: 3
+  bobber: {fileID: 1890771211690024669, guid: 09e689e84e1af2f4eaae05cdcccd7318, type: 3}

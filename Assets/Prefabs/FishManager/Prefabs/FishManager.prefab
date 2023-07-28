@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8229020571673646375}
-  - component: {fileID: 2539454657142227634}
+  - component: {fileID: 9094208568944952753}
   m_Layer: 0
-  m_Name: FishSpawner
+  m_Name: FishManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2539454657142227634
+--- !u!114 &9094208568944952753
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,14 +41,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 8949770369762514785}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 683ecdfa7e1318f4fac264cda30ed321, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b1f74b99296597478acbc7a9185f45b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   waterObject: {fileID: 0}
   groundObject: {fileID: 0}
-  fishObject: {fileID: 260260553294357464, guid: 55db020157d4ce24494ba6d9ddd499e0, type: 3}
+  fishPrefab: {fileID: 260260553294357464, guid: 55db020157d4ce24494ba6d9ddd499e0, type: 3}
+  fish: []
   tier1SpawnDistance: 10
   tier2SpawnDistance: 20
   fishSpawnAmount: 5
   timeBetweenSpawn: 5
-  fish: []

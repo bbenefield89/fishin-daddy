@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FishMover : MonoBehaviour
@@ -23,15 +24,18 @@ public class FishMover : MonoBehaviour
     public float boundaryOffset = 1f;
     public int tier;
     public NibbleTiming nibbleTiming;
+    public GameObject bobber;
 
     private Vector3 targetPosition;
-    private Coroutine moveFishCoroutine;
+    private IEnumerator moveFishCoroutine;
 
     private delegate Vector3 CheckAxisMethods(Dictionary<string, float> boundaries);
 
     private void Start()
     {
-        moveFishCoroutine = StartCoroutine(MoveFish());
+        bobber = GameObject.Find(Prefabs.BOBBER_MODEL);
+        moveFishCoroutine = MoveFish();
+        StartCoroutine(moveFishCoroutine);
     }
 
     private IEnumerator MoveFish()
@@ -211,44 +215,50 @@ public class FishMover : MonoBehaviour
     public IEnumerator MoveTowardsBobber()
     {
         StopCoroutine(moveFishCoroutine);
-
-        GameObject bobber = GameObject.Find(Prefabs.BOBBER_MODEL);
         targetPosition = bobber.transform.position;
-
         RotateFish();
+        yield return ApproachBobber();
+        yield return HookFish();
+    }
 
+    public IEnumerator MoveAwayFromBobber()
+    {
+        Vector3 distanceFromBobber = (transform.parent.position - bobber.transform.position) * 2;
+        targetPosition = transform.parent.position + distanceFromBobber;
+        yield return ApproachBobber();
+        yield return new WaitForSeconds(Random.Range(nibbleTiming.min, nibbleTiming.max));
+        StartCoroutine(MoveTowardsBobber());
+    }
+
+    private IEnumerator ApproachBobber()
+    {
         while (Vector3.Distance(transform.parent.position, targetPosition) > 0.2f)
         {
             transform.parent.position = Vector3.MoveTowards(transform.parent.position, targetPosition, swimSpeed * Time.deltaTime);
             yield return null;
         }
+    }
 
-        bool isHooked = Random.Range(0, 2) == 0 ? false : true;
-
-        if (isHooked)
+    private IEnumerator HookFish()
+    {
+        if (!FishManager.Instance.IsFishHooked)
         {
-            GetComponent<FishHooked>().HookFish();
-            yield return null;
+            bool isThisFishHooked = Random.Range(0, 2) == 0 ? false : true;
+            if (isThisFishHooked)
+            {
+                GetComponent<FishHooked>().HookFish();
+            }
+            else
+            {
+                StartCoroutine(MoveAwayFromBobber());
+            }
         }
         else
         {
-            StartCoroutine(MoveAwayFromBobber());
-        }
-    }
-
-    public IEnumerator MoveAwayFromBobber()
-    {
-        GameObject bobber = GameObject.Find(Prefabs.BOBBER_MODEL);
-        Vector3 distanceFromBobber = (transform.parent.position - bobber.transform.position) * 2;
-        targetPosition = transform.parent.position + distanceFromBobber;
-
-        while (Vector3.Distance(transform.parent.position, targetPosition) > 0.1f)
-        {
-            transform.parent.position = Vector3.MoveTowards(transform.parent.position, targetPosition, swimSpeed * Time.deltaTime);
-            yield return null;
+            StartCoroutine(MoveFish());
         }
 
-        yield return new WaitForSeconds(Random.Range(nibbleTiming.min, nibbleTiming.max));
-        StartCoroutine(MoveTowardsBobber());
+        yield return null;
     }
+
 }

@@ -1,18 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
-public class FishSpawner : MonoBehaviour
+public class FishManager : MonoBehaviour
 {
+    public static FishManager Instance { get; private set; }
+
+    public bool IsFishHooked { get; set; }
     public GameObject waterObject;
     public GameObject groundObject;
-    public GameObject fishObject;
+    public GameObject fishPrefab;
+    public List<GameObject> fish = new List<GameObject>();
     public float tier1SpawnDistance = 10f;
     public float tier2SpawnDistance = 20f;
     public int fishSpawnAmount = 1;
-    public float timeBetweenSpawn = 1f;
-    public List<GameObject> fish = new List<GameObject>();
+    public float timeBetweenSpawn = 5f;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -25,7 +39,7 @@ public class FishSpawner : MonoBehaviour
         {
             if (fish.Count < fishSpawnAmount)
             {
-                GameObject newFish = Instantiate(fishObject);
+                GameObject newFish = Instantiate(fishPrefab);
                 newFish.name = "Fish_" + fish.Count.ToString();
                 newFish.GetComponentInChildren<FishMover>().tier = 1;
                 newFish.transform.position = DetermineSpawnPos();

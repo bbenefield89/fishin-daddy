@@ -28,8 +28,8 @@ public class FishHooked : MonoBehaviour
     private void CatchFish()
     {
         fishCounterCanvas.GetComponent<FishCounterCanvas>().UpdateFishCounterUI();
-        fishSpawner.GetComponent<FishSpawner>().fish.Remove(fishObject);
-        Destroy(fishObject);
+        FishManager.Instance.fish.Remove(transform.parent.gameObject);
+        Destroy(transform.parent.gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -37,8 +37,7 @@ public class FishHooked : MonoBehaviour
         if (other.CompareTag(Tags.BOBBER))
         {
             bool isFishInterested = Random.Range(0, 2) == 0 ? false : true;
-
-            if (isFishInterested)
+            if (!FishManager.Instance.IsFishHooked && isFishInterested)
             {
                 FishMover fishMover = GetComponent<FishMover>();
                 StartCoroutine(fishMover.MoveTowardsBobber());
@@ -48,9 +47,19 @@ public class FishHooked : MonoBehaviour
 
     public void HookFish()
     {
-        isFishHooked = true;
-        fishHookedAudio.Play();
+        if (!FishManager.Instance.IsFishHooked)
+        {
+            isFishHooked = true;
+            FishManager.Instance.IsFishHooked = true;
+            fishHookedAudio.Play();
+            RenderExlcamations();
+        }
+    }
+
+
+    private void RenderExlcamations()
+    {
         GameObject exclamationMarksInstatiated = Instantiate(exclamationMarks);
-        exclamationMarksInstatiated.transform.SetParent(fishObject.transform, false);
+        exclamationMarksInstatiated.transform.SetParent(transform.parent.transform, false);
     }
 }
