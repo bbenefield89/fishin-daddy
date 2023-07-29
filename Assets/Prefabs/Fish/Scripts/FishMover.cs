@@ -18,14 +18,15 @@ public class FishMover : MonoBehaviour
         public float max;
     }
 
-    public float swimSpeed = 1f;
-    public float timeUntilNextSwim = 5f;
-    public float swimDistance = 5f;
-    public float boundaryOffset = 1f;
     public int tier;
-    public NibbleTiming nibbleTiming;
-    public GameObject bobber;
 
+    [SerializeField] private float swimSpeed = 1f;
+    [SerializeField] private float timeUntilNextSwim = 5f;
+    [SerializeField] private float swimDistance = 5f;
+    [SerializeField] private float boundaryOffset = 1f;
+    [SerializeField] private NibbleTiming nibbleTiming;
+
+    private GameObject bobber;
     private Vector3 targetPosition;
     private IEnumerator currentMovementCoroutine;
 
@@ -34,8 +35,7 @@ public class FishMover : MonoBehaviour
     private void Start()
     {
         bobber = GameObject.Find(Prefabs.BOBBER_MODEL);
-        currentMovementCoroutine = MoveFish();
-        StartCoroutine(currentMovementCoroutine);
+        StartNewMovementCoroutine(MoveFish());
     }
 
     private IEnumerator MoveFish()
@@ -219,10 +219,7 @@ public class FishMover : MonoBehaviour
             bool isFishInterested = Random.Range(0, 2) == 0 ? false : true;
             if (!FishManager.Instance.IsFishHooked && isFishInterested)
             {
-                StopCoroutine(currentMovementCoroutine);
-
-                currentMovementCoroutine = MoveTowardsBobber();
-                StartCoroutine(currentMovementCoroutine);
+                StartNewMovementCoroutine(MoveTowardsBobber());
             }
         }
     }
@@ -255,13 +252,12 @@ public class FishMover : MonoBehaviour
             }
             else
             {
-                currentMovementCoroutine = MoveAwayFromBobber();
-                StartCoroutine(currentMovementCoroutine);
+                StartNewMovementCoroutine(MoveAwayFromBobber());
             }
         }
         else
         {
-            ResumeNormalMovement();
+            StartNewMovementCoroutine(MoveFish());
         }
 
         yield return null;
@@ -274,26 +270,25 @@ public class FishMover : MonoBehaviour
         yield return ApproachBobber();
         yield return new WaitForSeconds(Random.Range(nibbleTiming.min, nibbleTiming.max));
 
-        currentMovementCoroutine = MoveTowardsBobber();
-        StartCoroutine(currentMovementCoroutine);
+        StartNewMovementCoroutine(MoveTowardsBobber());
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag(Tags.BOBBER))
         {
-            StopCoroutine(currentMovementCoroutine);
-
-            currentMovementCoroutine = MoveFish();
-            StartCoroutine(currentMovementCoroutine);
+            StartNewMovementCoroutine(MoveFish());
         }
     }
 
-    public void ResumeNormalMovement()
+    private void StartNewMovementCoroutine(IEnumerator coroutineToStart)
     {
-        StopCoroutine(currentMovementCoroutine);
+        if (currentMovementCoroutine != null)
+        {
+            StopCoroutine(currentMovementCoroutine);
+        }
 
-        currentMovementCoroutine = MoveFish();
+        currentMovementCoroutine = coroutineToStart;
         StartCoroutine(currentMovementCoroutine);
     }
 }
