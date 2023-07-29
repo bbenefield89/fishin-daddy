@@ -32,19 +32,6 @@ public class FishHooked : MonoBehaviour
         Destroy(transform.parent.gameObject);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag(Tags.BOBBER))
-        {
-            bool isFishInterested = Random.Range(0, 2) == 0 ? false : true;
-            if (!FishManager.Instance.IsFishHooked && isFishInterested)
-            {
-                FishMover fishMover = GetComponent<FishMover>();
-                StartCoroutine(fishMover.MoveTowardsBobber());
-            }
-        }
-    }
-
     public void HookFish()
     {
         if (!FishManager.Instance.IsFishHooked)
@@ -55,7 +42,6 @@ public class FishHooked : MonoBehaviour
             RenderExlcamations();
         }
     }
-
 
     private void RenderExlcamations()
     {

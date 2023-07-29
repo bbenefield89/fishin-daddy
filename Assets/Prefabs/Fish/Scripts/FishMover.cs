@@ -18,24 +18,24 @@ public class FishMover : MonoBehaviour
         public float max;
     }
 
-    public float swimSpeed = 1f;
-    public float timeUntilNextSwim = 5f;
-    public float swimDistance = 5f;
-    public float boundaryOffset = 1f;
     public int tier;
-    public NibbleTiming nibbleTiming;
-    public GameObject bobber;
 
+    [SerializeField] private float swimSpeed = 1f;
+    [SerializeField] private float timeUntilNextSwim = 5f;
+    [SerializeField] private float swimDistance = 5f;
+    [SerializeField] private float boundaryOffset = 1f;
+    [SerializeField] private NibbleTiming nibbleTiming;
+
+    private GameObject bobber;
     private Vector3 targetPosition;
-    private IEnumerator moveFishCoroutine;
+    private IEnumerator currentMovementCoroutine;
 
     private delegate Vector3 CheckAxisMethods(Dictionary<string, float> boundaries);
 
     private void Start()
     {
         bobber = GameObject.Find(Prefabs.BOBBER_MODEL);
-        moveFishCoroutine = MoveFish();
-        StartCoroutine(moveFishCoroutine);
+        StartNewMovementCoroutine(MoveFish());
     }
 
     private IEnumerator MoveFish()
@@ -212,22 +212,24 @@ public class FishMover : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(Tags.BOBBER))
+        {
+            bool isFishInterested = Random.Range(0, 2) == 0 ? false : true;
+            if (!FishManager.Instance.IsFishHooked && isFishInterested)
+            {
+                StartNewMovementCoroutine(MoveTowardsBobber());
+            }
+        }
+    }
+
     public IEnumerator MoveTowardsBobber()
     {
-        StopCoroutine(moveFishCoroutine);
         targetPosition = bobber.transform.position;
         RotateFish();
         yield return ApproachBobber();
         yield return HookFish();
-    }
-
-    public IEnumerator MoveAwayFromBobber()
-    {
-        Vector3 distanceFromBobber = (transform.parent.position - bobber.transform.position) * 2;
-        targetPosition = transform.parent.position + distanceFromBobber;
-        yield return ApproachBobber();
-        yield return new WaitForSeconds(Random.Range(nibbleTiming.min, nibbleTiming.max));
-        StartCoroutine(MoveTowardsBobber());
     }
 
     private IEnumerator ApproachBobber()
@@ -250,15 +252,43 @@ public class FishMover : MonoBehaviour
             }
             else
             {
-                StartCoroutine(MoveAwayFromBobber());
+                StartNewMovementCoroutine(MoveAwayFromBobber());
             }
         }
         else
         {
-            StartCoroutine(MoveFish());
+            StartNewMovementCoroutine(MoveFish());
         }
 
         yield return null;
     }
 
+    public IEnumerator MoveAwayFromBobber()
+    {
+        Vector3 distanceFromBobber = (transform.parent.position - bobber.transform.position) * 2;
+        targetPosition = transform.parent.position + distanceFromBobber;
+        yield return ApproachBobber();
+        yield return new WaitForSeconds(Random.Range(nibbleTiming.min, nibbleTiming.max));
+
+        StartNewMovementCoroutine(MoveTowardsBobber());
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(Tags.BOBBER))
+        {
+            StartNewMovementCoroutine(MoveFish());
+        }
+    }
+
+    private void StartNewMovementCoroutine(IEnumerator coroutineToStart)
+    {
+        if (currentMovementCoroutine != null)
+        {
+            StopCoroutine(currentMovementCoroutine);
+        }
+
+        currentMovementCoroutine = coroutineToStart;
+        StartCoroutine(currentMovementCoroutine);
+    }
 }
