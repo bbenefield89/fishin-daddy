@@ -71,4 +71,10 @@ public class FishManager : MonoBehaviour
 
         return spawnPos;
     }
+
+    public void DestroyFish(GameObject fishObj)
+    {
+        fish.Remove(fishObj);
+        Destroy(fishObj);
+    }
 }
