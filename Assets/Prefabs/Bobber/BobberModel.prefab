@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3523564436871282537}
   - component: {fileID: 4120824997432719101}
   m_Layer: 0
-  m_Name: Bobber
+  m_Name: BobberModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2294585334243902303
 MeshFilter:
@@ -100,7 +100,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -119,8 +119,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pcModel: {fileID: 0}
-  fishingPoleModel: {fileID: 0}
-  castDistance: 5
+  bobberReturnPosition: {fileID: 0}
   waterLevel: 0
+  castDistance: 5
   bobberMovementSpeed: 15
   arcHeight: 1
+  reelSpeed: 5

@@ -4,24 +4,18 @@ using UnityEngine.Timeline;
 
 public class BobberMove : MonoBehaviour
 {
-    [Tooltip("The PCModel game object")]
+
     public Transform pcModel;
 
     [Tooltip("GameObject that holds a reference to the position the bobber should be when not casted")]
     public Transform bobberReturnPosition;
 
-    [Tooltip("The maximum distance the bobber can be cast from the fishing pole")]
-    public float castDistance = 1f;
-
-    [Tooltip("The y-coordinate of the water level")]
+    [Tooltip("How far down on the Y axis the bobber should drop after casting")]
     public float waterLevel = 0f;
-
-    [Tooltip("How fast the bobber moves towards its destination after casting")]
+    public float castDistance = 1f;
     public float bobberMovementSpeed = 5f;
-
-    [Tooltip("The maximum height of the arc")]
     public float arcHeight = 1f;
-
+    public float reelSpeed = 5f;
     private bool isCasting = false;
     private bool hasBeenCasted = false;
 
@@ -31,9 +25,9 @@ public class BobberMove : MonoBehaviour
         {
             StartCoroutine(CastBobber());
         }
-        else if (Input.GetMouseButtonDown(1) && !isCasting && hasBeenCasted)
+        else if (Input.GetMouseButton(1) && !isCasting && hasBeenCasted)
         {
-            ReturnBobberToFishingPole();
+            ReelBobberIn();
         }
     }
 
@@ -94,13 +88,25 @@ public class BobberMove : MonoBehaviour
         }
     }
 
+    private void ReelBobberIn()
+    {
+        Vector3 targetPos = new Vector3(bobberReturnPosition.position.x, waterLevel, bobberReturnPosition.position.z);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, reelSpeed * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(Tags.GROUND))
+        {
+            ReturnBobberToFishingPole();
+        }
+    }
 
     private void ReturnBobberToFishingPole()
     {
         hasBeenCasted = false;
         transform.position = bobberReturnPosition.position;
         transform.parent = bobberReturnPosition;
-        FishManager.Instance.IsFishHooked = false;
     }
 
 }

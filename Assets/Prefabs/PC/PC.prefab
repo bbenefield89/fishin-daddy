@@ -133,7 +133,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -153,10 +153,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pcModel: {fileID: 95749526024594216}
   bobberReturnPosition: {fileID: 8547376443940258315}
-  castDistance: 5
   waterLevel: 0
+  castDistance: 5
   bobberMovementSpeed: 15
   arcHeight: 1
+  reelSpeed: 5
 --- !u!1 &2855965858561320247
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,7 +188,7 @@ Transform:
   m_Children:
   - {fileID: 95749526024594216}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3582499832106392915
 GameObject:

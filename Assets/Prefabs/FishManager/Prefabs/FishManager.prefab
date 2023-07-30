@@ -46,9 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterObject: {fileID: 0}
   groundObject: {fileID: 0}
-  fishPrefab: {fileID: 260260553294357464, guid: 55db020157d4ce24494ba6d9ddd499e0, type: 3}
+  fishPrefab: {fileID: 8267612654247882820, guid: 9b46a5c7abc567e4d85772522dbd724d, type: 3}
   fish: []
   tier1SpawnDistance: 10
   tier2SpawnDistance: 20
-  fishSpawnAmount: 5
-  timeBetweenSpawn: 5
+  fishSpawnAmount: 20
+  timeBetweenSpawn: 1

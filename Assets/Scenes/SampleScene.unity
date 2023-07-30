@@ -193,7 +193,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782915}
-  m_LocalRotation: {x: 0.09957816, y: -0.05272983, z: 0.0052844663, w: 0.9936176}
+  m_LocalRotation: {x: 0.09957815, y: -0.052729867, z: 0.0052844705, w: 0.9936176}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -277,7 +277,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90573892}
-  m_LocalRotation: {x: 0.06341934, y: -0.052887022, z: 0.0033655737, w: 0.996579}
+  m_LocalRotation: {x: 0.06341934, y: -0.052886985, z: 0.0033655716, w: 0.996579}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -561,10 +561,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Earth
       objectReference: {fileID: 0}
-    - target: {fileID: 8835534484311801039, guid: 2fd9dd42a537c9a468964dcf4262b390, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.01
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -630,9 +626,7 @@ PrefabInstance:
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 963194228}
-    m_RemovedComponents:
-    - {fileID: 703277969232930197, guid: 648ef586274e8344a815bc4884dbe143, type: 3}
-    - {fileID: 5807444703233408137, guid: 648ef586274e8344a815bc4884dbe143, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1095,7 +1089,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.06341934, y: -0.05288704, z: 0.0033655744, w: 0.99657905}
+  m_LocalRotation: {x: 0.06341934, y: -0.05288697, z: 0.0033655695, w: 0.99657905}
   m_LocalPosition: {x: 0.8572963, y: 2.19, z: -8.054505}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1609,10 +1603,6 @@ PrefabInstance:
       value: FishManager
       objectReference: {fileID: 0}
     - target: {fileID: 9094208568944952753, guid: 9776d8eff96cc294b840ba6d866f0e3b, type: 3}
-      propertyPath: fishPrefab
-      value: 
-      objectReference: {fileID: 8267612654247882820, guid: 9b46a5c7abc567e4d85772522dbd724d, type: 3}
-    - target: {fileID: 9094208568944952753, guid: 9776d8eff96cc294b840ba6d866f0e3b, type: 3}
       propertyPath: waterObject
       value: 
       objectReference: {fileID: 1224984873}
@@ -1620,14 +1610,6 @@ PrefabInstance:
       propertyPath: groundObject
       value: 
       objectReference: {fileID: 77466190}
-    - target: {fileID: 9094208568944952753, guid: 9776d8eff96cc294b840ba6d866f0e3b, type: 3}
-      propertyPath: fishSpawnAmount
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 9094208568944952753, guid: 9776d8eff96cc294b840ba6d866f0e3b, type: 3}
-      propertyPath: timeBetweenSpawn
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
