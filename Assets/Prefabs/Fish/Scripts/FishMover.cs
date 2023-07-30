@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class FishMover : MonoBehaviour
@@ -26,6 +25,7 @@ public class FishMover : MonoBehaviour
     [SerializeField] private float boundaryOffset = 1f;
     [SerializeField] private NibbleTiming nibbleTiming;
 
+    private bool isFishInterested = false;
     private GameObject bobber;
     private Vector3 targetPosition;
     private IEnumerator currentMovementCoroutine;
@@ -216,7 +216,7 @@ public class FishMover : MonoBehaviour
     {
         if (other.CompareTag(Tags.BOBBER))
         {
-            bool isFishInterested = Random.Range(0, 2) == 0 ? false : true;
+            isFishInterested = Random.Range(0, 2) == 0 ? false : true;
             if (!FishManager.Instance.IsFishHooked && isFishInterested)
             {
                 StartNewMovementCoroutine(MoveTowardsBobber());
@@ -275,7 +275,7 @@ public class FishMover : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(Tags.BOBBER))
+        if (other.CompareTag(Tags.BOBBER) && isFishInterested)
         {
             StartNewMovementCoroutine(MoveFish());
         }
