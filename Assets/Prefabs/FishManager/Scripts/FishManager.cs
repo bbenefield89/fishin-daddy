@@ -67,7 +67,7 @@ public class FishManager : MonoBehaviour
 
         float randomX = possibleX[Random.Range(0, 2)];
         float randomZ = possibleZ[Random.Range(0, 2)];
-        Vector3 spawnPos = new Vector3(randomX, 0f, randomZ);
+        Vector3 spawnPos = new Vector3(randomX, waterObject.transform.position.y, randomZ);
 
         return spawnPos;
     }
