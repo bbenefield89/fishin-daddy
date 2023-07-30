@@ -23,6 +23,7 @@ public class FishMover : MonoBehaviour
     [SerializeField] private float timeUntilNextSwim = 5f;
     [SerializeField] private float swimDistance = 5f;
     [SerializeField] private float boundaryOffset = 1f;
+    [SerializeField] private float fadeAwaySpeed = 0.005f;
     [SerializeField] private NibbleTiming nibbleTiming;
 
     private bool isFishInterested = false;
@@ -214,13 +215,12 @@ public class FishMover : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(Tags.BOBBER))
+        isFishInterested = Random.Range(0, 2) == 0 ? false : true;
+        if (other.CompareTag(Tags.BOBBER) &&
+            !FishManager.Instance.IsFishHooked &&
+            isFishInterested)
         {
-            isFishInterested = Random.Range(0, 2) == 0 ? false : true;
-            if (!FishManager.Instance.IsFishHooked && isFishInterested)
-            {
-                StartNewMovementCoroutine(MoveTowardsBobber());
-            }
+            StartNewMovementCoroutine(MoveTowardsBobber());
         }
     }
 
@@ -257,7 +257,7 @@ public class FishMover : MonoBehaviour
         }
         else
         {
-            StartNewMovementCoroutine(MoveFish());
+            StartNewMovementCoroutine(FadeAway());
         }
 
         yield return null;
@@ -277,7 +277,7 @@ public class FishMover : MonoBehaviour
     {
         if (other.CompareTag(Tags.BOBBER) && isFishInterested)
         {
-            StartNewMovementCoroutine(MoveFish());
+            StartNewMovementCoroutine(FadeAway());
         }
     }
 
@@ -290,5 +290,23 @@ public class FishMover : MonoBehaviour
 
         currentMovementCoroutine = coroutineToStart;
         StartCoroutine(currentMovementCoroutine);
+    }
+
+    private IEnumerator FadeAway()
+    {
+        Material fishMaterial = GetComponentInChildren<Renderer>().material;
+        Vector3 groundPos = GameObject.Find(Prefabs.GROUND).transform.position;
+
+        while (fishMaterial.color.a > 0.1f)
+        {
+            targetPosition = (transform.parent.position - groundPos) * 10;
+            transform.parent.position = Vector3.MoveTowards(transform.parent.position, targetPosition, swimSpeed * Time.deltaTime);
+            fishMaterial.color = new Color(fishMaterial.color.r, fishMaterial.color.g, fishMaterial.color.b, fishMaterial.color.a - fadeAwaySpeed);
+            RotateFish();
+
+            yield return null;
+        }
+
+        FishManager.Instance.DestroyFish(transform.parent.gameObject);
     }
 }
