@@ -306,7 +306,5 @@ public class FishMover : MonoBehaviour
 
             yield return null;
         }
-
-        FishManager.Instance.DestroyFish(transform.parent.gameObject);
     }
 }

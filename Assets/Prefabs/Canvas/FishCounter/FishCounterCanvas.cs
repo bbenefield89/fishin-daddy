@@ -3,10 +3,23 @@ using TMPro;
 
 public class FishCounterCanvas : MonoBehaviour
 {
-    [Tooltip("Reference to the text field that displays the amount of fish caught")]
+    public static FishCounterCanvas Instance { get; private set; }
+
     public TextMeshProUGUI fishCounterText;
 
     private int fishCaughtCount = 0;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public void UpdateFishCounterUI()
     {

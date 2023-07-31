@@ -3,16 +3,11 @@ using UnityEngine;
 
 public class Exclamations : MonoBehaviour
 {
-    void Start()
+    private void OnEnable()
     {
-        Transform player = GameObject.Find(Prefabs.PC).transform;
-        Vector3 targetPos = player.position - transform.position;
-        Quaternion rotation = Quaternion.LookRotation(targetPos);
-        transform.rotation = rotation;
-
-        foreach (Transform t in transform)
+        foreach (Transform exclamationMark in transform)
         {
-            ExclamationMark exclamationMarkScript = t.GetComponent<ExclamationMark>();
+            ExclamationMark exclamationMarkScript = exclamationMark.GetComponent<ExclamationMark>();
             StartCoroutine(exclamationMarkScript.Animate(0));
         }
     }
