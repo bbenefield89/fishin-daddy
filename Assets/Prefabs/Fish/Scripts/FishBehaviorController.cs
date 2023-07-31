@@ -6,10 +6,11 @@ public class FishBehaviorController : MonoBehaviour
     public static FishBehaviorController Instance { get; private set; }
 
     [SerializeField] private GameObject bobberModel;
-    [SerializeField] private float moveSpeed = 1.0f;
+    [SerializeField] private float swimSpeed = 1.0f;
     [SerializeField] private float swimDistance = 2.0f;
     [SerializeField] private float timeUntilNextSwim = 1.0f;
     [SerializeField] private float desiredDistFromTargetPos = 0.1f;
+    [SerializeField] private float distanceFromBobber = 1f;
 
     private void Awake()
     {
@@ -34,49 +35,62 @@ public class FishBehaviorController : MonoBehaviour
         Vector3 startPos = transform.position;
         Vector3 endPos = transform.position + transform.forward * swimDistance;
 
-        while (true)
+        while (!BobberController.Instance.isFishHooked)
         {
-            yield return MoveRoutine(endPos);
-            yield return MoveRoutine(startPos);
+            yield return MoveRoutine(endPos, true);
+
+            bool shouldFishNibble = true;// RandomNumberGenerator.TruthyFalsyGenerator();
+            if (shouldFishNibble)
+            {
+                yield return MoveRoutine(bobberModel.transform.position, true);
+                yield return Nibble();
+            }
+            else
+            {
+                yield return MoveRoutine(startPos, true);
+            }
         }
     }
 
-    private IEnumerator MoveRoutine(Vector3 targetPos)
+    private IEnumerator MoveRoutine(Vector3 targetPos, bool shouldRotate)
     {
-        transform.rotation = Quaternion.LookRotation(targetPos - transform.position);
+        if (shouldRotate)
+        {
+            transform.rotation = Quaternion.LookRotation(targetPos - transform.position);
+        }
 
         while (Vector3.Distance(transform.position, targetPos) > desiredDistFromTargetPos)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, swimSpeed * Time.deltaTime);
             yield return null;
         }
 
         yield return new WaitForSeconds(timeUntilNextSwim);
     }
 
-    public void CheckFishNibble()
+    // after 1f, go for another nibble
+    // repeat this until fish bites
+    // private method nibble
+    private IEnumerator Nibble()
     {
-        bool shouldFishNibble = RandomNumberGenerator.TruthyFalsyGenerator();
-        if (shouldFishNibble)
+        // when close enough, check if fish bites
+        bool shouldFishBite = true;// RandomNumberGenerator.TruthyFalsyGenerator();
+        if (shouldFishBite)
         {
-            CheckFishBite();
+            // if fish bites, call BobberController.Instance.HookFish()
+            BobberController.Instance.HookFish();
+            FishHookedAudioController.Instance.PlayFishHookedAudio();
         }
         else
         {
-        }
-    }
+            // if fish does not bite, move fish backwards from bobber but still facing bobber
+            Vector3 targetPos = transform.position + transform.forward * distanceFromBobber * -1;
 
-    private void CheckFishBite()
-    {
-        //bool shouldFishBite = RandomNumberGenerator.TruthyFalsyGenerator();
-        //if (shouldFishBite)
-        //{
-        //    HookFish();
-        //    exclamations.SetActive(true);
-        //    fishHookedAudio.Play();
-        //}
-        //else
-        //{
-        //}
+            while (Vector3.Distance(transform.position, targetPos) > desiredDistFromTargetPos)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, targetPos, swimSpeed * Time.deltaTime);
+                yield return null;
+            }
+        }
     }
 }

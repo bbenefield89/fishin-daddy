@@ -12,6 +12,7 @@ public class BobberController : MonoBehaviour
     public Transform bobberReturnPosition;
     public GameObject exclamations;
     public AudioSource fishHookedAudio;
+    public bool isFishHooked { get; private set; } = false;
 
     [Tooltip("How far down on the Y axis the bobber should drop after casting")]
     public float waterLevel = 0f;
@@ -23,7 +24,6 @@ public class BobberController : MonoBehaviour
 
     private bool isCasting = false;
     private bool hasBeenCasted = false;
-    private bool isFishHooked = false;
     private bool isBeingReeledIn = false;
     #endregion
 
@@ -65,8 +65,7 @@ public class BobberController : MonoBehaviour
 
         yield return MoveBobber();
         yield return DropBobberToWater();
-        FishSpawner.Instance.Spawn();
-        //StartCoroutine(AttractFishToBobber());
+        StartCoroutine(AttractFishToBobber());
 
         isCasting = false;
         transform.parent = null;  // Remove the bobber from its parent to prevent it from moving/rotating when the PC moves/rotates
@@ -119,21 +118,22 @@ public class BobberController : MonoBehaviour
 
     private IEnumerator AttractFishToBobber()
     {
-        while (hasBeenCasted && !isFishHooked && !isBeingReeledIn)
+        bool isFishInterested = false;
+
+        while (hasBeenCasted && !isFishHooked && !isBeingReeledIn && !isFishInterested)
         {
             float nextBiteCheckIntervalRandom = rng.Generate();
             yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
 
-            bool isFishInterested = RandomNumberGenerator.TruthyFalsyGenerator();
-
+            isFishInterested = RandomNumberGenerator.TruthyFalsyGenerator();
             if (!isBeingReeledIn && isFishInterested)  // Check isBeingReeledIn again in case the player reels in the bobber while the coroutine is waiting
             {
-                FishBehaviorController.Instance.CheckFishNibble();
+                FishSpawner.Instance.Spawn();
             }
         }
     }
 
-    private void HookFish()
+    public void HookFish()
     {
         Vector3 pos = transform.position;
         Vector3 newPos = new Vector3(pos.x, waterLevel - 1f, pos.z);
