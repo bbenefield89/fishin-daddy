@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BobberMove : MonoBehaviour
 {
+    #region Props
     public Transform pcModel;
 
     [Tooltip("GameObject that holds a reference to the position the bobber should be when not casted")]
@@ -22,7 +23,9 @@ public class BobberMove : MonoBehaviour
     private bool hasBeenCasted = false;
     private bool isFishHooked = false;
     private bool isBeingReeledIn = false;
+    #endregion
 
+    #region Update
     void Update()
     {
         if (Input.GetMouseButtonDown(1) && !isCasting && !hasBeenCasted)
@@ -46,7 +49,7 @@ public class BobberMove : MonoBehaviour
 
         yield return MoveBobber();
         yield return DropBobberToWater();
-        StartCoroutine(AttractFishToBobber());
+        //StartCoroutine(AttractFishToBobber());
 
         isCasting = false;
         transform.parent = null;  // Remove the bobber from its parent to prevent it from moving/rotating when the PC moves/rotates
@@ -94,7 +97,9 @@ public class BobberMove : MonoBehaviour
             fracJourney = distCovered / journeyLength;
             transform.position = Vector3.Lerp(start, end, fracJourney);
             yield return null;
-        }
+        };
+
+        FishSpawner.Instance.Spawn();
     }
 
     private IEnumerator AttractFishToBobber()
@@ -146,8 +151,6 @@ public class BobberMove : MonoBehaviour
         isFishHooked = true;
     }
 
-
-
     private void ReelBobberIn()
     {
         isBeingReeledIn = true;
@@ -155,7 +158,9 @@ public class BobberMove : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, targetPos, reelSpeed * Time.deltaTime);
         exclamations.SetActive(false);
     }
+    #endregion
 
+    #region OnTriggerEnter
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(Tags.GROUND))
@@ -176,5 +181,5 @@ public class BobberMove : MonoBehaviour
         transform.position = bobberReturnPosition.position;
         transform.parent = bobberReturnPosition;
     }
-
+    #endregion
 }
