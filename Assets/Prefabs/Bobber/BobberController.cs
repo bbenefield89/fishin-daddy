@@ -1,9 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
-public class BobberMove : MonoBehaviour
+public class BobberController : MonoBehaviour
 {
     #region Props
+    public static BobberController Instance { get; private set; }
+
     public Transform pcModel;
 
     [Tooltip("GameObject that holds a reference to the position the bobber should be when not casted")]
@@ -23,6 +25,20 @@ public class BobberMove : MonoBehaviour
     private bool hasBeenCasted = false;
     private bool isFishHooked = false;
     private bool isBeingReeledIn = false;
+    #endregion
+
+    #region Awake
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
     #endregion
 
     #region Update
@@ -49,6 +65,7 @@ public class BobberMove : MonoBehaviour
 
         yield return MoveBobber();
         yield return DropBobberToWater();
+        FishSpawner.Instance.Spawn();
         //StartCoroutine(AttractFishToBobber());
 
         isCasting = false;
@@ -98,8 +115,6 @@ public class BobberMove : MonoBehaviour
             transform.position = Vector3.Lerp(start, end, fracJourney);
             yield return null;
         };
-
-        FishSpawner.Instance.Spawn();
     }
 
     private IEnumerator AttractFishToBobber()
@@ -109,36 +124,12 @@ public class BobberMove : MonoBehaviour
             float nextBiteCheckIntervalRandom = rng.Generate();
             yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
 
-            if (!isBeingReeledIn)  // Check isBeingReeledIn again in case the player reels in the bobber while the coroutine is waiting
+            bool isFishInterested = RandomNumberGenerator.TruthyFalsyGenerator();
+
+            if (!isBeingReeledIn && isFishInterested)  // Check isBeingReeledIn again in case the player reels in the bobber while the coroutine is waiting
             {
-                CheckFishNibble();
+                FishBehaviorController.Instance.CheckFishNibble();
             }
-        }
-    }
-
-    private void CheckFishNibble()
-    {
-        bool shouldFishNibble = RandomNumberGenerator.TruthyFalsyGenerator();
-        if (shouldFishNibble)
-        {
-            CheckFishBite();
-        }
-        else
-        {
-        }
-    }
-
-    private void CheckFishBite()
-    {
-        bool shouldFishBite = RandomNumberGenerator.TruthyFalsyGenerator();
-        if (shouldFishBite)
-        {
-            HookFish();
-            exclamations.SetActive(true);
-            fishHookedAudio.Play();
-        }
-        else
-        {
         }
     }
 

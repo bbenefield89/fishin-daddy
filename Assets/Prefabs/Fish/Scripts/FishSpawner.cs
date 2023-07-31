@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class FishSpawner : MonoBehaviour
 {
@@ -30,6 +27,6 @@ public class FishSpawner : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
 
         transform.position = desiredPos + transform.forward * -1;
-        FishMover.Instance.BeginMovement();
+        FishBehaviorController.Instance.BeginMovement();
     }
 }
