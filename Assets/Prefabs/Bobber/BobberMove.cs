@@ -1,14 +1,14 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Timeline;
 
 public class BobberMove : MonoBehaviour
 {
-
     public Transform pcModel;
 
     [Tooltip("GameObject that holds a reference to the position the bobber should be when not casted")]
     public Transform bobberReturnPosition;
+    public GameObject exclamations;
+    public AudioSource fishHookedAudio;
 
     [Tooltip("How far down on the Y axis the bobber should drop after casting")]
     public float waterLevel = 0f;
@@ -16,8 +16,12 @@ public class BobberMove : MonoBehaviour
     public float bobberMovementSpeed = 5f;
     public float arcHeight = 1f;
     public float reelSpeed = 5f;
+    public RandomNumberGenerator rng;
+
     private bool isCasting = false;
     private bool hasBeenCasted = false;
+    private bool isFishHooked = false;
+    private bool isBeingReeledIn = false;
 
     void Update()
     {
@@ -29,6 +33,10 @@ public class BobberMove : MonoBehaviour
         {
             ReelBobberIn();
         }
+        else
+        {
+            isBeingReeledIn = false;
+        }
     }
 
     private IEnumerator CastBobber()
@@ -38,6 +46,7 @@ public class BobberMove : MonoBehaviour
 
         yield return MoveBobber();
         yield return DropBobberToWater();
+        StartCoroutine(AttractFishToBobber());
 
         isCasting = false;
         transform.parent = null;  // Remove the bobber from its parent to prevent it from moving/rotating when the PC moves/rotates
@@ -88,10 +97,63 @@ public class BobberMove : MonoBehaviour
         }
     }
 
+    private IEnumerator AttractFishToBobber()
+    {
+        while (hasBeenCasted && !isFishHooked && !isBeingReeledIn)
+        {
+            float nextBiteCheckIntervalRandom = rng.Generate();
+            yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
+
+            if (!isBeingReeledIn)  // Check isBeingReeledIn again in case the player reels in the bobber while the coroutine is waiting
+            {
+                CheckFishNibble();
+            }
+        }
+    }
+
+    private void CheckFishNibble()
+    {
+        bool shouldFishNibble = RandomNumberGenerator.TruthyFalsyGenerator();
+        if (shouldFishNibble)
+        {
+            CheckFishBite();
+        }
+        else
+        {
+        }
+    }
+
+    private void CheckFishBite()
+    {
+        bool shouldFishBite = RandomNumberGenerator.TruthyFalsyGenerator();
+        if (shouldFishBite)
+        {
+            HookFish();
+            exclamations.SetActive(true);
+            fishHookedAudio.Play();
+        }
+        else
+        {
+        }
+    }
+
+    private void HookFish()
+    {
+        Vector3 pos = transform.position;
+        Vector3 newPos = new Vector3(pos.x, waterLevel - 1f, pos.z);
+        transform.position = newPos;
+
+        isFishHooked = true;
+    }
+
+
+
     private void ReelBobberIn()
     {
+        isBeingReeledIn = true;
         Vector3 targetPos = new Vector3(bobberReturnPosition.position.x, waterLevel, bobberReturnPosition.position.z);
         transform.position = Vector3.MoveTowards(transform.position, targetPos, reelSpeed * Time.deltaTime);
+        exclamations.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -99,6 +161,12 @@ public class BobberMove : MonoBehaviour
         if (other.CompareTag(Tags.GROUND))
         {
             ReturnBobberToFishingPole();
+
+            if (isFishHooked)
+            {
+                isFishHooked = false;
+                FishCounterCanvas.Instance.UpdateFishCounterUI();
+            }
         }
     }
 
