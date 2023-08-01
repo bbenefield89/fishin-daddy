@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FishMover : MonoBehaviour
+public class FishMoverOld : MonoBehaviour
 {
     public enum BoundaryType
     {

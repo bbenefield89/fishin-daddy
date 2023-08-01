@@ -1,14 +1,18 @@
 using System.Collections;
 using UnityEngine;
 
-public class BobberMove : MonoBehaviour
+public class BobberController : MonoBehaviour
 {
+    #region Props
+    public static BobberController Instance { get; private set; }
+
     public Transform pcModel;
 
     [Tooltip("GameObject that holds a reference to the position the bobber should be when not casted")]
     public Transform bobberReturnPosition;
     public GameObject exclamations;
     public AudioSource fishHookedAudio;
+    public bool isFishHooked { get; private set; } = false;
 
     [Tooltip("How far down on the Y axis the bobber should drop after casting")]
     public float waterLevel = 0f;
@@ -20,9 +24,24 @@ public class BobberMove : MonoBehaviour
 
     private bool isCasting = false;
     private bool hasBeenCasted = false;
-    private bool isFishHooked = false;
     private bool isBeingReeledIn = false;
+    #endregion
 
+    #region Awake
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+    #endregion
+
+    #region Update
     void Update()
     {
         if (Input.GetMouseButtonDown(1) && !isCasting && !hasBeenCasted)
@@ -94,50 +113,27 @@ public class BobberMove : MonoBehaviour
             fracJourney = distCovered / journeyLength;
             transform.position = Vector3.Lerp(start, end, fracJourney);
             yield return null;
-        }
+        };
     }
 
     private IEnumerator AttractFishToBobber()
     {
-        while (hasBeenCasted && !isFishHooked && !isBeingReeledIn)
+        bool isFishInterested = false;
+
+        while (hasBeenCasted && !isFishHooked && !isBeingReeledIn && !isFishInterested)
         {
             float nextBiteCheckIntervalRandom = rng.Generate();
             yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
 
-            if (!isBeingReeledIn)  // Check isBeingReeledIn again in case the player reels in the bobber while the coroutine is waiting
+            isFishInterested = RandomNumberGenerator.TruthyFalsyGenerator();
+            if (!isBeingReeledIn && isFishInterested)  // Check isBeingReeledIn again in case the player reels in the bobber while the coroutine is waiting
             {
-                CheckFishNibble();
+                FishSpawner.Instance.Spawn();
             }
         }
     }
 
-    private void CheckFishNibble()
-    {
-        bool shouldFishNibble = RandomNumberGenerator.TruthyFalsyGenerator();
-        if (shouldFishNibble)
-        {
-            CheckFishBite();
-        }
-        else
-        {
-        }
-    }
-
-    private void CheckFishBite()
-    {
-        bool shouldFishBite = RandomNumberGenerator.TruthyFalsyGenerator();
-        if (shouldFishBite)
-        {
-            HookFish();
-            exclamations.SetActive(true);
-            fishHookedAudio.Play();
-        }
-        else
-        {
-        }
-    }
-
-    private void HookFish()
+    public void HookFish()
     {
         Vector3 pos = transform.position;
         Vector3 newPos = new Vector3(pos.x, waterLevel - 1f, pos.z);
@@ -146,8 +142,6 @@ public class BobberMove : MonoBehaviour
         isFishHooked = true;
     }
 
-
-
     private void ReelBobberIn()
     {
         isBeingReeledIn = true;
@@ -155,7 +149,9 @@ public class BobberMove : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, targetPos, reelSpeed * Time.deltaTime);
         exclamations.SetActive(false);
     }
+    #endregion
 
+    #region OnTriggerEnter
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(Tags.GROUND))
@@ -176,5 +172,5 @@ public class BobberMove : MonoBehaviour
         transform.position = bobberReturnPosition.position;
         transform.parent = bobberReturnPosition;
     }
-
+    #endregion
 }

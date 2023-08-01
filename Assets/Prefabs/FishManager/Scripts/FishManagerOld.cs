@@ -41,7 +41,7 @@ public class FishManagerOld : MonoBehaviour
             {
                 GameObject newFish = Instantiate(fishPrefab);
                 newFish.name = "Fish_" + fish.Count.ToString();
-                newFish.GetComponentInChildren<FishMover>().tier = 1;
+                newFish.GetComponentInChildren<FishMoverOld>().tier = 1;
                 newFish.transform.position = DetermineSpawnPos();
                 fish.Add(newFish);
             }
