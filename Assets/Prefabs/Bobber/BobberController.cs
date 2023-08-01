@@ -138,7 +138,7 @@ public class BobberController : MonoBehaviour
         Vector3 pos = transform.position;
         Vector3 newPos = new Vector3(pos.x, waterLevel - 1f, pos.z);
         transform.position = newPos;
-
+        exclamations.SetActive(true);
         isFishHooked = true;
     }
 
