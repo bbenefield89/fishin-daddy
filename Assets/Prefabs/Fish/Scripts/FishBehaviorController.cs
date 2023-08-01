@@ -39,11 +39,10 @@ public class FishBehaviorController : MonoBehaviour
         {
             yield return MoveRoutine(endPos, true);
 
-            bool shouldFishNibble = true;// RandomNumberGenerator.TruthyFalsyGenerator();
+            bool shouldFishNibble = RandomNumberGenerator.TruthyFalsyGenerator();
             if (shouldFishNibble)
             {
-                yield return MoveRoutine(bobberModel.transform.position, true);
-                yield return Nibble();
+                yield return InteractWithBobber();
             }
             else
             {
@@ -68,28 +67,23 @@ public class FishBehaviorController : MonoBehaviour
         yield return new WaitForSeconds(timeUntilNextSwim);
     }
 
-    // after 1f, go for another nibble
-    // repeat this until fish bites
-    // private method nibble
-    private IEnumerator Nibble()
+    private IEnumerator InteractWithBobber()
     {
-        // when close enough, check if fish bites
-        bool shouldFishBite = true;// RandomNumberGenerator.TruthyFalsyGenerator();
-        if (shouldFishBite)
+        while (!BobberController.Instance.isFishHooked)
         {
-            // if fish bites, call BobberController.Instance.HookFish()
-            BobberController.Instance.HookFish();
-            FishHookedAudioController.Instance.PlayFishHookedAudio();
-        }
-        else
-        {
-            // if fish does not bite, move fish backwards from bobber but still facing bobber
-            Vector3 targetPos = transform.position + transform.forward * distanceFromBobber * -1;
+            yield return MoveRoutine(bobberModel.transform.position, true);
 
-            while (Vector3.Distance(transform.position, targetPos) > desiredDistFromTargetPos)
+            bool shouldFishBite = RandomNumberGenerator.TruthyFalsyGenerator();
+            if (shouldFishBite)
             {
-                transform.position = Vector3.MoveTowards(transform.position, targetPos, swimSpeed * Time.deltaTime);
+                BobberController.Instance.HookFish();
+                FishHookedAudioController.Instance.PlayFishHookedAudio();
                 yield return null;
+            }
+            else
+            {
+                Vector3 swimBackwardPos = transform.position + transform.forward * distanceFromBobber * -1;
+                yield return MoveRoutine(swimBackwardPos, false);
             }
         }
     }

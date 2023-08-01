@@ -18,7 +18,7 @@ public class FishSpawner : MonoBehaviour
             Destroy(this);
         }
     }
-
+    
     public void Spawn()
     {
         Vector3 desiredPos = bobberModel.position + bobberModel.position.normalized * offset;
