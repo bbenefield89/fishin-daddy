@@ -5,13 +5,14 @@ public class FishBehaviorController : MonoBehaviour
 {
     public static FishBehaviorController Instance { get; private set; }
 
+    public bool IsFishHooked = false;
+
     [SerializeField] private GameObject _bobberModel;
     [SerializeField] private float _swimSpeed = 1.0f;
     [SerializeField] private float _swimDistance = 2.0f;
     [SerializeField] private float _timeUntilNextSwim = 1.0f;
     [SerializeField] private float _desiredDistFromTargetPos = 0.1f;
     [SerializeField] private float _distanceFromBobber = 1f;
-    [SerializeField] private bool _isFishHooked = false;
 
     private void Awake()
     {
@@ -36,7 +37,7 @@ public class FishBehaviorController : MonoBehaviour
         Vector3 startPos = transform.position;
         Vector3 endPos = transform.position + transform.forward * _swimDistance;
 
-        while (!_isFishHooked)
+        while (!IsFishHooked)
         {
             yield return MoveRoutine(endPos, true);
 
@@ -50,6 +51,31 @@ public class FishBehaviorController : MonoBehaviour
                 yield return MoveRoutine(startPos, true);
             }
         }
+
+        while (IsFishHooked)
+        {
+            yield return FollowBobber();
+        }
+    }
+
+    private IEnumerator FollowBobber()
+    {
+        float reelSpeed = BobberController.Instance.ReelSpeed;
+        Vector3 bobberPos = BobberController.Instance.transform.position;
+        Vector3 targetPos = new Vector3(
+            bobberPos.x,
+            transform.position.y,
+            bobberPos.z);
+
+        Vector3 pcPos = PCModel.Instance.transform.position;
+        Vector3 lookToPos = new Vector3(
+            pcPos.x,
+            transform.position.y,
+            pcPos.z);
+            
+        transform.rotation = Quaternion.LookRotation(lookToPos - transform.position);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, reelSpeed * Time.deltaTime);
+        yield return null;
     }
 
     private IEnumerator MoveRoutine(Vector3 targetPos, bool shouldRotate)
@@ -70,7 +96,7 @@ public class FishBehaviorController : MonoBehaviour
 
     private IEnumerator InteractWithBobber()
     {
-        while (!_isFishHooked)
+        while (!IsFishHooked)
         {
             yield return MoveRoutine(_bobberModel.transform.position, true);
 
@@ -87,5 +113,13 @@ public class FishBehaviorController : MonoBehaviour
                 yield return MoveRoutine(swimBackwardPos, false);
             }
         }
+    }
+
+    public void Reset()
+    {
+        StopAllCoroutines();
+        IsFishHooked = false;
+        transform.position = new Vector3(0f, -1f, 0f);
+        transform.rotation = Quaternion.identity;
     }
 }

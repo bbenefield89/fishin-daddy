@@ -2,12 +2,26 @@ using UnityEngine;
 
 public class PCModel : MonoBehaviour
 {
+    public static PCModel Instance { get; private set; }
+
     public Transform cameraTransform;
     public float movementSpeed = 5f;
     public float gravity = -9.81f;
 
     private CharacterController characterController;
     private Vector3 velocity;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {

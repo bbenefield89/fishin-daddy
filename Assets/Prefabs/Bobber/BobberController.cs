@@ -12,14 +12,13 @@ public class BobberController : MonoBehaviour
     public Transform bobberReturnPosition;
     public GameObject exclamations;
     public AudioSource fishHookedAudio;
-    public bool isFishHooked { get; private set; } = false;
 
     [Tooltip("How far down on the Y axis the bobber should drop after casting")]
     public float waterLevel = 0f;
     public float castDistance = 1f;
     public float bobberMovementSpeed = 5f;
     public float arcHeight = 1f;
-    public float reelSpeed = 5f;
+    public float ReelSpeed = 5f;
     public RandomNumberGenerator rng;
 
     private bool isCasting = false;
@@ -120,7 +119,10 @@ public class BobberController : MonoBehaviour
     {
         bool isFishInterested = false;
 
-        while (hasBeenCasted && !isFishHooked && !isBeingReeledIn && !isFishInterested)
+        while (hasBeenCasted &&
+            !FishBehaviorController.Instance.IsFishHooked &&
+            !isBeingReeledIn &&
+            !isFishInterested)
         {
             float nextBiteCheckIntervalRandom = rng.Generate();
             yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
@@ -139,14 +141,23 @@ public class BobberController : MonoBehaviour
         Vector3 newPos = new Vector3(pos.x, waterLevel - 1f, pos.z);
         transform.position = newPos;
         exclamations.SetActive(true);
-        isFishHooked = true;
+        FishBehaviorController.Instance.IsFishHooked = true;
     }
 
     private void ReelBobberIn()
     {
         isBeingReeledIn = true;
-        Vector3 targetPos = new Vector3(bobberReturnPosition.position.x, waterLevel, bobberReturnPosition.position.z);
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, reelSpeed * Time.deltaTime);
+
+        Vector3 targetPos = new Vector3(
+            bobberReturnPosition.position.x,
+            waterLevel,
+            bobberReturnPosition.position.z);
+
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPos,
+            ReelSpeed * Time.deltaTime);
+
         exclamations.SetActive(false);
     }
     #endregion
@@ -158,9 +169,9 @@ public class BobberController : MonoBehaviour
         {
             ReturnBobberToFishingPole();
 
-            if (isFishHooked)
+            if (FishBehaviorController.Instance.IsFishHooked)
             {
-                isFishHooked = false;
+                FishBehaviorController.Instance.Reset();
                 FishCounterCanvas.Instance.UpdateFishCounterUI();
             }
         }
