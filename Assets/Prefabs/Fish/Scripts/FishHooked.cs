@@ -28,7 +28,6 @@ public class FishHooked : MonoBehaviour
     private void CatchFish()
     {
         fishCounterCanvas.GetComponent<FishCounterCanvas>().UpdateFishCounterUI();
-        FishManager.Instance.fish.Remove(transform.parent.gameObject);
         Destroy(transform.parent.gameObject);
     }
 

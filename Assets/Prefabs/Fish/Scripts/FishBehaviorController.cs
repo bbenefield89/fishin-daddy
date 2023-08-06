@@ -5,12 +5,13 @@ public class FishBehaviorController : MonoBehaviour
 {
     public static FishBehaviorController Instance { get; private set; }
 
-    [SerializeField] private GameObject bobberModel;
-    [SerializeField] private float swimSpeed = 1.0f;
-    [SerializeField] private float swimDistance = 2.0f;
-    [SerializeField] private float timeUntilNextSwim = 1.0f;
-    [SerializeField] private float desiredDistFromTargetPos = 0.1f;
-    [SerializeField] private float distanceFromBobber = 1f;
+    [SerializeField] private GameObject _bobberModel;
+    [SerializeField] private float _swimSpeed = 1.0f;
+    [SerializeField] private float _swimDistance = 2.0f;
+    [SerializeField] private float _timeUntilNextSwim = 1.0f;
+    [SerializeField] private float _desiredDistFromTargetPos = 0.1f;
+    [SerializeField] private float _distanceFromBobber = 1f;
+    [SerializeField] private bool _isFishHooked = false;
 
     private void Awake()
     {
@@ -33,9 +34,9 @@ public class FishBehaviorController : MonoBehaviour
     private IEnumerator Move()
     {
         Vector3 startPos = transform.position;
-        Vector3 endPos = transform.position + transform.forward * swimDistance;
+        Vector3 endPos = transform.position + transform.forward * _swimDistance;
 
-        while (!BobberController.Instance.isFishHooked)
+        while (!_isFishHooked)
         {
             yield return MoveRoutine(endPos, true);
 
@@ -58,20 +59,20 @@ public class FishBehaviorController : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(targetPos - transform.position);
         }
 
-        while (Vector3.Distance(transform.position, targetPos) > desiredDistFromTargetPos)
+        while (Vector3.Distance(transform.position, targetPos) > _desiredDistFromTargetPos)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, swimSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, _swimSpeed * Time.deltaTime);
             yield return null;
         }
 
-        yield return new WaitForSeconds(timeUntilNextSwim);
+        yield return new WaitForSeconds(_timeUntilNextSwim);
     }
 
     private IEnumerator InteractWithBobber()
     {
-        while (!BobberController.Instance.isFishHooked)
+        while (!_isFishHooked)
         {
-            yield return MoveRoutine(bobberModel.transform.position, true);
+            yield return MoveRoutine(_bobberModel.transform.position, true);
 
             bool shouldFishBite = RandomNumberGenerator.TruthyFalsyGenerator();
             if (shouldFishBite)
@@ -82,7 +83,7 @@ public class FishBehaviorController : MonoBehaviour
             }
             else
             {
-                Vector3 swimBackwardPos = transform.position + transform.forward * distanceFromBobber * -1;
+                Vector3 swimBackwardPos = transform.position + transform.forward * _distanceFromBobber * -1;
                 yield return MoveRoutine(swimBackwardPos, false);
             }
         }
