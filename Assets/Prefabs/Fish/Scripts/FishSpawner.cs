@@ -27,6 +27,6 @@ public class FishSpawner : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
 
         transform.position = desiredPos + transform.forward * -1;
-        FishBehaviorController.Instance.BeginMovement();
+        FishController.Instance.BeginMovement();
     }
 }

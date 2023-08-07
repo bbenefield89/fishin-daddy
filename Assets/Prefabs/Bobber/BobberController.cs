@@ -120,7 +120,7 @@ public class BobberController : MonoBehaviour
         bool isFishInterested = false;
 
         while (hasBeenCasted &&
-            !FishBehaviorController.Instance.IsFishHooked &&
+            !FishController.Instance.IsFishHooked &&
             !isBeingReeledIn &&
             !isFishInterested)
         {
@@ -128,7 +128,11 @@ public class BobberController : MonoBehaviour
             yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
 
             isFishInterested = RandomNumberGenerator.TruthyFalsyGenerator();
-            if (!isBeingReeledIn && isFishInterested)  // Check isBeingReeledIn again in case the player reels in the bobber while the coroutine is waiting
+
+            if (hasBeenCasted &&
+                !FishController.Instance.IsFishHooked &&
+                !isBeingReeledIn &&
+                !isFishInterested)  // Check some conditions again because coroutines
             {
                 FishSpawner.Instance.Spawn();
             }
@@ -141,7 +145,7 @@ public class BobberController : MonoBehaviour
         Vector3 newPos = new Vector3(pos.x, waterLevel - 1f, pos.z);
         transform.position = newPos;
         exclamations.SetActive(true);
-        FishBehaviorController.Instance.IsFishHooked = true;
+        FishController.Instance.IsFishHooked = true;
     }
 
     private void ReelBobberIn()
@@ -168,10 +172,10 @@ public class BobberController : MonoBehaviour
         if (other.CompareTag(Tags.GROUND))
         {
             ReturnBobberToFishingPole();
+            FishController.Instance.Reset();
 
-            if (FishBehaviorController.Instance.IsFishHooked)
+            if (FishController.Instance.IsFishHooked)
             {
-                FishBehaviorController.Instance.Reset();
                 FishCounterCanvas.Instance.UpdateFishCounterUI();
             }
         }
@@ -179,6 +183,7 @@ public class BobberController : MonoBehaviour
 
     private void ReturnBobberToFishingPole()
     {
+        StopAllCoroutines();
         hasBeenCasted = false;
         transform.position = bobberReturnPosition.position;
         transform.parent = bobberReturnPosition;
