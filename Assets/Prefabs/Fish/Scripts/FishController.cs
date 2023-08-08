@@ -6,6 +6,7 @@ public class FishController : MonoBehaviour
     public static FishController Instance { get; private set; }
 
     public bool IsFishHooked = false;
+    public bool IsFishInterested = false;
 
     [SerializeField] private GameObject _bobberModel;
     [SerializeField] private float _swimSpeed = 1.0f;
@@ -13,6 +14,10 @@ public class FishController : MonoBehaviour
     [SerializeField] private float _timeUntilNextSwim = 1.0f;
     [SerializeField] private float _desiredDistFromTargetPos = 0.1f;
     [SerializeField] private float _distanceFromBobber = 1f;
+
+    [Header("Exposed variables for easier debugging")]
+    public bool FishAlwaysInterested = false;
+    public bool FishAlwaysBite = false;
 
     private void Awake()
     {
@@ -100,7 +105,10 @@ public class FishController : MonoBehaviour
         {
             yield return MoveRoutine(_bobberModel.transform.position, true);
 
-            bool shouldFishBite = RandomNumberGenerator.TruthyFalsyGenerator();
+            bool shouldFishBite = FishAlwaysBite ?
+                FishAlwaysBite :
+                RandomNumberGenerator.TruthyFalsyGenerator();
+
             if (shouldFishBite)
             {
                 BobberController.Instance.HookFish();
@@ -119,6 +127,7 @@ public class FishController : MonoBehaviour
     {
         StopAllCoroutines();
         IsFishHooked = false;
+        IsFishInterested = false;
         transform.position = new Vector3(0f, -1f, 0f);
         transform.rotation = Quaternion.identity;
     }

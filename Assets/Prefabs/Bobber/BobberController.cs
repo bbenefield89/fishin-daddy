@@ -19,7 +19,7 @@ public class BobberController : MonoBehaviour
     public float bobberMovementSpeed = 5f;
     public float arcHeight = 1f;
     public float ReelSpeed = 5f;
-    public RandomNumberGenerator rng;
+    public RandomNumberGenerator Rng;
 
     private bool isCasting = false;
     private bool hasBeenCasted = false;
@@ -117,22 +117,27 @@ public class BobberController : MonoBehaviour
 
     private IEnumerator AttractFishToBobber()
     {
-        bool isFishInterested = false;
-
-        while (hasBeenCasted &&
+        while (
+            hasBeenCasted &&
             !FishController.Instance.IsFishHooked &&
-            !isBeingReeledIn &&
-            !isFishInterested)
+            !FishController.Instance.IsFishInterested &&
+            !isBeingReeledIn)
         {
-            float nextBiteCheckIntervalRandom = rng.Generate();
+            float nextBiteCheckIntervalRandom = Rng.Generate();
             yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
 
-            isFishInterested = RandomNumberGenerator.TruthyFalsyGenerator();
+            FishController.Instance.IsFishInterested =
+                FishController.Instance.FishAlwaysInterested ?
+                FishController.Instance.FishAlwaysInterested :
+                RandomNumberGenerator.TruthyFalsyGenerator();
 
-            if (hasBeenCasted &&
+            bool shouldSpawnFish =
+                hasBeenCasted &&
+                FishController.Instance.IsFishInterested &&
                 !FishController.Instance.IsFishHooked &&
-                !isBeingReeledIn &&
-                !isFishInterested)  // Check some conditions again because coroutines
+                !isBeingReeledIn;
+
+            if (shouldSpawnFish)  // Check some conditions again because coroutines
             {
                 FishSpawner.Instance.Spawn();
             }
