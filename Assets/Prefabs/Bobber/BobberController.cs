@@ -139,7 +139,7 @@ public class BobberController : MonoBehaviour
 
             if (shouldSpawnFish)  // Check some conditions again because coroutines
             {
-                FishSpawner.Instance.Spawn();
+                FishController.Instance.Spawn();
             }
         }
     }
@@ -178,11 +178,6 @@ public class BobberController : MonoBehaviour
         {
             ReturnBobberToFishingPole();
             FishController.Instance.Reset();
-
-            if (FishController.Instance.IsFishHooked)
-            {
-                FishCounterCanvas.Instance.UpdateFishCounterUI();
-            }
         }
     }
 
