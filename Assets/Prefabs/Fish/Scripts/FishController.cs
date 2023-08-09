@@ -1,22 +1,29 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FishController : MonoBehaviour
 {
     public static FishController Instance { get; private set; }
+    private FishState _currentState;
 
-    public bool IsFishHooked = false;
+    [Header("State variables")]
+    public bool IsFishIdle = true;
     public bool IsFishInterested = false;
+    public bool IsFishNibbling = false;
+    public bool IsFishBiting = false;
+    public bool IsFishHooked = false;
 
-    [SerializeField] private GameObject _bobberModel;
-    [SerializeField] private float _swimSpeed = 1.0f;
-    [SerializeField] private float _swimDistance = 2.0f;
-    [SerializeField] private float _timeUntilNextSwim = 1.0f;
-    [SerializeField] private float _desiredDistFromTargetPos = 0.1f;
-    [SerializeField] private float _distanceFromBobber = 1f;
+    [Header("Movement/distance variables")]
+    public float SwimSpeed = 1.0f;
+    public float TimeUntilNextSwim = 1.0f;
+    public float SwimDistance = 2.0f;
+    public float DesiredDistFromTargetPos = 0.1f;
+    public float DistanceFromBobber = 1f;
 
     [Header("Exposed variables for easier debugging")]
     public bool FishAlwaysInterested = false;
+    public bool FishAlwaysNibble = false;
     public bool FishAlwaysBite = false;
 
     private void Awake()
@@ -31,104 +38,61 @@ public class FishController : MonoBehaviour
         }
     }
 
-    [ContextMenu("Functions/BeginMovement")]
-    public void BeginMovement()
+    private void Start()
     {
-        StartCoroutine(Move());
+        SetState(new FishIdleState(this));
     }
 
-    private IEnumerator Move()
+    private void Update()
     {
-        Vector3 startPos = transform.position;
-        Vector3 endPos = transform.position + transform.forward * _swimDistance;
+        _currentState.UpdateState();
+    }
 
-        while (!IsFishHooked)
+    public void SetState(FishState state)
+    {
+        if (_currentState != null)
         {
-            yield return MoveRoutine(endPos, true);
-
-            bool shouldFishNibble = RandomNumberGenerator.TruthyFalsyGenerator();
-            if (shouldFishNibble)
-            {
-                yield return InteractWithBobber();
-            }
-            else
-            {
-                yield return MoveRoutine(startPos, true);
-            }
+            _currentState.ExitState();
         }
 
-        while (IsFishHooked)
-        {
-            yield return FollowBobber();
-        }
+        _currentState = state;
+        _currentState.EnterState();
     }
 
-    private IEnumerator FollowBobber()
-    {
-        float reelSpeed = BobberController.Instance.ReelSpeed;
-        Vector3 bobberPos = BobberController.Instance.transform.position;
-        Vector3 targetPos = new Vector3(
-            bobberPos.x,
-            transform.position.y,
-            bobberPos.z);
-
-        Vector3 pcPos = PCModel.Instance.transform.position;
-        Vector3 lookToPos = new Vector3(
-            pcPos.x,
-            transform.position.y,
-            pcPos.z);
-            
-        transform.rotation = Quaternion.LookRotation(lookToPos - transform.position);
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, reelSpeed * Time.deltaTime);
-        yield return null;
-    }
-
-    private IEnumerator MoveRoutine(Vector3 targetPos, bool shouldRotate)
+    public IEnumerator MoveRoutine(Vector3 targetPos, bool shouldRotate)
     {
         if (shouldRotate)
         {
             transform.rotation = Quaternion.LookRotation(targetPos - transform.position);
         }
 
-        while (Vector3.Distance(transform.position, targetPos) > _desiredDistFromTargetPos)
+        while (Vector3.Distance(transform.position, targetPos) > DesiredDistFromTargetPos)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, _swimSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, SwimSpeed * Time.deltaTime);
             yield return null;
         }
 
-        yield return new WaitForSeconds(_timeUntilNextSwim);
+        yield return new WaitForSeconds(TimeUntilNextSwim);
     }
 
-    private IEnumerator InteractWithBobber()
+    public void Spawn()
     {
-        while (!IsFishHooked)
-        {
-            yield return MoveRoutine(_bobberModel.transform.position, true);
+        Vector3 desiredPos = BobberController.Instance.transform.position + BobberController.Instance.transform.position.normalized * DistanceFromBobber;
 
-            bool shouldFishBite = FishAlwaysBite ?
-                FishAlwaysBite :
-                RandomNumberGenerator.TruthyFalsyGenerator();
+        Quaternion lookDir = Quaternion.LookRotation(BobberController.Instance.transform.position - desiredPos);
+        transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
 
-            if (shouldFishBite)
-            {
-                BobberController.Instance.HookFish();
-                FishHookedAudioController.Instance.PlayFishHookedAudio();
-                yield return null;
-            }
-            else
-            {
-                Vector3 swimBackwardPos = transform.position + transform.forward * _distanceFromBobber * -1;
-                yield return MoveRoutine(swimBackwardPos, false);
-            }
-        }
+        transform.position = desiredPos + transform.forward * -1;
+        IsFishInterested = true;
     }
 
     public void Reset()
     {
-        StopAllCoroutines();
-        IsFishHooked = false;
-        IsFishInterested = false;
-        transform.position = new Vector3(0f, -1f, 0f);
-        transform.rotation = Quaternion.identity;
+        if (IsFishHooked)
+        {
+            FishCounterCanvas.Instance.UpdateFishCounterUI();
+        }
+
+        IsFishIdle = true;
     }
 }

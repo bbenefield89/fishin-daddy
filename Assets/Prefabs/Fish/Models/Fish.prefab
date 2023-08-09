@@ -143,5 +143,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc53368da31dc9448beb30f45724a6ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bobberModel: {fileID: 0}
-  moveSpeed: 1
+  IsFishIdle: 1
+  IsFishInterested: 0
+  IsFishNibbling: 0
+  IsFishBiting: 0
+  IsFishHooked: 0
+  SwimSpeed: 1
+  TimeUntilNextSwim: 1
+  SwimDistance: 2
+  DesiredDistFromTargetPos: 0.1
+  DistanceFromBobber: 1
+  FishAlwaysInterested: 0
+  FishAlwaysNibble: 0
+  FishAlwaysBite: 0
