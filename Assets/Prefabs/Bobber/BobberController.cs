@@ -139,7 +139,6 @@ public class BobberController : MonoBehaviour
 
             if (shouldSpawnFish)  // Check some conditions again because coroutines
             {
-                //FishSpawner.Instance.Spawn();
                 FishController.Instance.Spawn();
             }
         }
