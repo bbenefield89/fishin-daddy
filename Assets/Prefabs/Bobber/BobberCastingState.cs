@@ -31,11 +31,6 @@ public class BobberCastingState : BobberState
         yield return DropBobberToWater();
 
         _bobber.IsInWater = true;
-
-        //StartCoroutine(AttractFishToBobber());
-
-        //IsCasting = false;
-        //transform.parent = null;  // Remove the bobber from its parent to prevent it from moving/rotating when the PC moves/rotates
     }
 
     private IEnumerator MoveBobber()
