@@ -8,13 +8,12 @@ public class BobberBeingReeledInState : BobberState
 
     public override void EnterState()
     {
-        _bobber.Exclamations.SetActive(false);
         _bobber.StartCoroutine(ReelBobberIn());
     }
 
     public override void UpdateState()
     {
-        //
+        // Nothing to do here
     }
 
     public override void ExitState()
@@ -28,6 +27,8 @@ public class BobberBeingReeledInState : BobberState
         {
             if (Input.GetMouseButton(1))
             {
+                _bobber.Exclamations.SetActive(false);
+
                 Vector3 targetPos = new Vector3(
                     _bobber.BobberReturnPosition.position.x,
                     _bobber.WaterLevel,
@@ -37,7 +38,6 @@ public class BobberBeingReeledInState : BobberState
                     _bobber.transform.position,
                     targetPos,
                     _bobber.ReelSpeed * Time.deltaTime);
-
             }
 
             yield return null;
