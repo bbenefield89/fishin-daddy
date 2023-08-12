@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class FishBitingState : FishState
 {
     public FishBitingState(FishController fish) : base(fish) { }
@@ -27,7 +23,7 @@ public class FishBitingState : FishState
 
     private void BiteHook()
     {
-        BobberController.Instance.HookFish();
+        BobberController.Instance.IsBeingBit = true;
         FishHookedAudioController.Instance.PlayFishHookedAudio();
     }
 }

@@ -7,6 +7,7 @@ public class FishHookedState : FishState
 
     public override void EnterState()
     {
+        _fish.IsFishHooked = true;
         _fish.StartCoroutine(FollowBobber());
     }
 
