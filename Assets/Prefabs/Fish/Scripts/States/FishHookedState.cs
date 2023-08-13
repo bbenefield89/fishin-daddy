@@ -7,13 +7,13 @@ public class FishHookedState : FishState
 
     public override void EnterState()
     {
-        _fish.IsFishHooked = true;
+        _fish.IsHooked = true;
         _fish.StartCoroutine(FollowBobber());
     }
 
     public override void UpdateState()
     {
-        if (_fish.IsFishIdle)
+        if (_fish.IsIdle)
         {
             _fish.SetState(new FishIdleState(_fish));
         }
@@ -22,7 +22,7 @@ public class FishHookedState : FishState
     public override void ExitState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsFishHooked = false;
+        _fish.IsHooked = false;
     }
 
     private IEnumerator FollowBobber()

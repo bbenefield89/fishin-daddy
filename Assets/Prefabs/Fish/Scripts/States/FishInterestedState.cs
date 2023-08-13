@@ -12,7 +12,7 @@ public class FishInterestedState : FishState
 
     public override void UpdateState()
     {
-        if (_fish.IsFishNibbling)
+        if (_fish.IsNibbling)
         {
             _fish.SetState(new FishNibblingState(_fish));
         }
@@ -21,7 +21,7 @@ public class FishInterestedState : FishState
     public override void ExitState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsFishInterested = false;
+        _fish.IsInterested = false;
     }
 
     private IEnumerator Move()
@@ -33,13 +33,13 @@ public class FishInterestedState : FishState
         {
             yield return _fish.MoveRoutine(endPos, true);
 
-            bool shouldFishNibble = _fish.FishAlwaysNibble ?
-                _fish.FishAlwaysNibble :
+            bool shouldFishNibble = _fish.AlwaysNibble ?
+                _fish.AlwaysNibble :
                 RandomNumberGenerator.TruthyFalsyGenerator();
 
             if (shouldFishNibble)
             {
-                _fish.IsFishNibbling = true;
+                _fish.IsNibbling = true;
                 yield return null;
             }
             else

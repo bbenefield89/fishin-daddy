@@ -32,19 +32,17 @@ public class BobberInWaterState : BobberState
 
     private IEnumerator AttractFishToBobber()
     {
-        while (
-            !FishController.Instance.IsFishInterested &&
-            !FishController.Instance.IsFishHooked)
+        while (FishController.Instance.IsIdle)
         {
             float nextBiteCheckIntervalRandom = _bobber.Rng.Generate();
             yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
 
-            FishController.Instance.IsFishInterested =
-                FishController.Instance.FishAlwaysInterested ?
-                FishController.Instance.FishAlwaysInterested :
+            FishController.Instance.IsInterested =
+                FishController.Instance.AlwaysInterested ?
+                FishController.Instance.AlwaysInterested :
                 RandomNumberGenerator.TruthyFalsyGenerator();
 
-            if (FishController.Instance.IsFishInterested)  // Check some conditions again because coroutines
+            if (FishController.Instance.IsInterested)  // Check some conditions again because coroutines
             {
                 FishController.Instance.Spawn();
             }

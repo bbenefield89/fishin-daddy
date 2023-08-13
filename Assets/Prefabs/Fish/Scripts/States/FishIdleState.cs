@@ -15,7 +15,7 @@ public class FishIdleState : FishState
 
     public override void UpdateState()
     {
-        if (_fish.IsFishInterested)
+        if (_fish.IsInterested)
         {
             _fish.SetState(new FishInterestedState(_fish));
         }
@@ -24,6 +24,6 @@ public class FishIdleState : FishState
     public override void ExitState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsFishIdle = false;
+        _fish.IsIdle = false;
     }
 }
