@@ -20,6 +20,9 @@ public class FishController : MonoBehaviour
     public float SwimDistance = 2.0f;
     public float DesiredDistFromTargetPos = 0.1f;
     public float DistanceFromBobber = 1f;
+    public float FadeAwaySpeed = 0.5f;
+
+    private float _originalAlpha;
 
     [Header("Exposed variables for easier debugging")]
     public bool AlwaysInterested = false;
@@ -40,6 +43,7 @@ public class FishController : MonoBehaviour
 
     private void Start()
     {
+        _originalAlpha = GetComponentInChildren<Renderer>().material.color.a;
         SetState(new FishIdleState(this));
     }
 
@@ -93,6 +97,18 @@ public class FishController : MonoBehaviour
             FishCounterCanvas.Instance.UpdateFishCounterUI();
         }
 
-        IsIdle = true;
+        transform.position = new Vector3(0f, -1f, 0f);
+        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        ResetAlpha();
+        SetState(new FishIdleState(this));
+    }
+
+    private void ResetAlpha()
+    {
+        Renderer fishRenderer = GetComponentInChildren<Renderer>();
+        Color fishColor = fishRenderer.material.color;
+
+        fishColor.a = _originalAlpha;
+        fishRenderer.material.color = fishColor;
     }
 }

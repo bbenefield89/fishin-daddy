@@ -9,8 +9,7 @@ public class FishIdleState : FishState
     public override void EnterState()
     {
         _fish.StopAllCoroutines();
-        _fish.transform.position = new Vector3(0f, -1f, 0f);
-        _fish.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        _fish.IsIdle = true;
     }
 
     public override void UpdateState()

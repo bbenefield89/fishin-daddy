@@ -9,8 +9,9 @@ public class FishSwimmingAwayState : FishState
 
     public override void EnterState()
     {
+        _fish.StopAllCoroutines();
         _fish.IsSwimmingAway = true;
-        _fish.StartCoroutine(SwimAway());
+        _fish.StartCoroutine(BeginSwimAway());
     }
 
     public override void UpdateState()
@@ -21,16 +22,29 @@ public class FishSwimmingAwayState : FishState
     public override void ExitState()
     {
         _fish.IsSwimmingAway = false;
+        _fish.StopAllCoroutines();
     }
 
-    // Move fish in opposite direction of bobber
+    private IEnumerator BeginSwimAway()
+    {
+        _fish.StartCoroutine(SwimAway());
+        yield return FadeAway();
+        _fish.Reset();
+        // Fish should rotate to face correct swimming direction
+        // Found bug, fish "stutters" when begins swimming around bobber
+    }
+
     private IEnumerator SwimAway()
     {
         Vector3 currentPos = _fish.transform.position;
         Vector3 bobberPos = BobberController.Instance.transform.position;
         Vector3 dirToSwim = (currentPos - bobberPos).normalized;
         Vector3 swimToPos = dirToSwim * 20f;
-        Func<bool> notAtSwimToPos = () => Vector3.Distance(_fish.transform.position, swimToPos) > 0.1f;
+        Func<bool> notAtSwimToPos = () =>
+        {
+            Vector3 fishPos = _fish.transform.position;
+            return Vector3.Distance(fishPos, swimToPos) > 0.1f;
+        };
 
         while (notAtSwimToPos())
         {
@@ -41,9 +55,21 @@ public class FishSwimmingAwayState : FishState
 
             yield return null;
         }
-
-        // Fish should begin to fade away
-        // Fish should then return to Idle State
-        // Fish should be visible again
     }
+
+    private IEnumerator FadeAway()
+    {
+        Renderer renderer = _fish.GetComponentInChildren<Renderer>();
+        Color fishModelColor = renderer.material.color;
+
+        while (fishModelColor.a > 0f)
+        {
+            float deltaAlpha = _fish.FadeAwaySpeed * Time.deltaTime;
+            fishModelColor.a -= deltaAlpha;
+            renderer.material.color = fishModelColor;
+
+            yield return null;
+        }
+    }
+
 }
