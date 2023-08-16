@@ -12,13 +12,13 @@ public class BobberController : MonoBehaviour
     public bool IsCasting = false;
     public bool IsInWater = false;
     public bool IsBeingReeledIn = false;
-
-    public Transform PcModel;
+    public bool IsBeingBit = false;
 
     [Tooltip("GameObject that holds a reference to the position the bobber should be when not casted")]
     public Transform BobberReturnPosition;
     public GameObject Exclamations;
-    public AudioSource fishHookedAudio;
+    public AudioSource FishHookedAudio;
+    public Transform PcModel;
 
     [Tooltip("How far down on the Y axis the bobber should drop after casting")]
     public float WaterLevel = 0f;
@@ -26,6 +26,7 @@ public class BobberController : MonoBehaviour
     public float BobberMovementSpeed = 15f;
     public float ArcHeight = 1f;
     public float ReelSpeed = 5f;
+    public float TimeAllowedToHookFish = 1f;
     public RandomNumberGenerator Rng;
     #endregion
 
@@ -60,15 +61,6 @@ public class BobberController : MonoBehaviour
 
         _currentState = state;
         _currentState.EnterState();
-    }
-
-    public void HookFish()
-    {
-        Vector3 pos = transform.position;
-        Vector3 newPos = new Vector3(pos.x, WaterLevel - 1f, pos.z);
-        transform.position = newPos;
-        Exclamations.SetActive(true);
-        FishController.Instance.IsFishHooked = true;
     }
 
     private void OnTriggerEnter(Collider other)

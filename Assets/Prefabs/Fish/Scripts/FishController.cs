@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class FishController : MonoBehaviour
@@ -8,11 +7,12 @@ public class FishController : MonoBehaviour
     private FishState _currentState;
 
     [Header("State variables")]
-    public bool IsFishIdle = true;
-    public bool IsFishInterested = false;
-    public bool IsFishNibbling = false;
-    public bool IsFishBiting = false;
-    public bool IsFishHooked = false;
+    public bool IsIdle = true;
+    public bool IsInterested = false;
+    public bool IsNibbling = false;
+    public bool IsBiting = false;
+    public bool IsHooked = false;
+    public bool IsSwimmingAway = false;
 
     [Header("Movement/distance variables")]
     public float SwimSpeed = 1.0f;
@@ -20,11 +20,14 @@ public class FishController : MonoBehaviour
     public float SwimDistance = 2.0f;
     public float DesiredDistFromTargetPos = 0.1f;
     public float DistanceFromBobber = 1f;
+    public float FadeAwaySpeed = 0.5f;
+
+    private float _originalAlpha;
 
     [Header("Exposed variables for easier debugging")]
-    public bool FishAlwaysInterested = false;
-    public bool FishAlwaysNibble = false;
-    public bool FishAlwaysBite = false;
+    public bool AlwaysInterested = false;
+    public bool AlwaysNibble = false;
+    public bool AlwaysBite = false;
 
     private void Awake()
     {
@@ -34,12 +37,13 @@ public class FishController : MonoBehaviour
         }
         else
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 
     private void Start()
     {
+        _originalAlpha = GetComponentInChildren<Renderer>().material.color.a;
         SetState(new FishIdleState(this));
     }
 
@@ -68,6 +72,7 @@ public class FishController : MonoBehaviour
 
         while (Vector3.Distance(transform.position, targetPos) > DesiredDistFromTargetPos)
         {
+            Vector3 prevPos = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, targetPos, SwimSpeed * Time.deltaTime);
             yield return null;
         }
@@ -83,16 +88,30 @@ public class FishController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
 
         transform.position = desiredPos + transform.forward * -1;
-        IsFishInterested = true;
+
+        IsIdle = false;
+        IsInterested = true;
     }
 
     public void Reset()
     {
-        if (IsFishHooked)
+        if (IsHooked)
         {
             FishCounterCanvas.Instance.UpdateFishCounterUI();
         }
 
-        IsFishIdle = true;
+        transform.position = new Vector3(0f, -1f, 0f);
+        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        ResetAlpha();
+        SetState(new FishIdleState(this));
+    }
+
+    private void ResetAlpha()
+    {
+        Renderer fishRenderer = GetComponentInChildren<Renderer>();
+        Color fishColor = fishRenderer.material.color;
+
+        fishColor.a = _originalAlpha;
+        fishRenderer.material.color = fishColor;
     }
 }

@@ -1,15 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BobberInWaterState : BobberState
 {
-    public BobberInWaterState(BobberController bobber) : base(bobber)
-    {
-    }
+    public BobberInWaterState(BobberController bobber) : base(bobber) { }
 
     public override void EnterState()
     {
+        _bobber.IsInWater = true;
         _bobber.transform.parent = null;
         _bobber.StartCoroutine(AttractFishToBobber());
     }
@@ -21,6 +19,10 @@ public class BobberInWaterState : BobberState
             _bobber.IsBeingReeledIn = true;
             _bobber.SetState(new BobberBeingReeledInState(_bobber));
         }
+        else if (_bobber.IsBeingBit)
+        {
+            _bobber.SetState(new BobberIsBeingBitState(_bobber));
+        }
     }
 
     public override void ExitState()
@@ -30,18 +32,19 @@ public class BobberInWaterState : BobberState
 
     private IEnumerator AttractFishToBobber()
     {
-        while (!FishController.Instance.IsFishInterested)
+        while (FishController.Instance.IsIdle)
         {
             float nextBiteCheckIntervalRandom = _bobber.Rng.Generate();
             yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
 
-            FishController.Instance.IsFishInterested =
-                FishController.Instance.FishAlwaysInterested ?
-                FishController.Instance.FishAlwaysInterested :
+            FishController.Instance.IsInterested =
+                FishController.Instance.AlwaysInterested ?
+                FishController.Instance.AlwaysInterested :
                 RandomNumberGenerator.TruthyFalsyGenerator();
 
-            if (FishController.Instance.IsFishInterested)  // Check some conditions again because coroutines
+            if (FishController.Instance.IsInterested)  // Check some conditions again because coroutines
             {
+
                 FishController.Instance.Spawn();
             }
         }
