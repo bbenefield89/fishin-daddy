@@ -1,19 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class BobberBeingReeledInState : BobberState
 {
+    public static event Action OnFishShouldSwimAway;
+
     public BobberBeingReeledInState(BobberController bobber) : base(bobber) { }
 
     public override void EnterState()
     {
-        _bobber.StartCoroutine(ReelBobberIn());
+        _bobber.IsBeingReeledIn = true;
     }
 
     public override void UpdateState()
     {
-        // Nothing to do here
+        if (Input.GetMouseButton(1))
+        {
+            _bobber.Exclamations.SetActive(false);
+            ReelBobberIn();
+
+            if (
+                !FishController.Instance.IsIdle &&
+                !FishController.Instance.IsHooked &&
+                !FishController.Instance.IsSwimmingAway)
+            {
+                OnFishShouldSwimAway?.Invoke();
+            }
+        }
     }
 
     public override void ExitState()
@@ -21,26 +34,16 @@ public class BobberBeingReeledInState : BobberState
         _bobber.IsBeingReeledIn = false;
     }
 
-    private IEnumerator ReelBobberIn()
+    private void ReelBobberIn()
     {
-        while (true)
-        {
-            if (Input.GetMouseButton(1))
-            {
-                _bobber.Exclamations.SetActive(false);
+        Vector3 targetPos = new Vector3(
+            _bobber.BobberReturnPosition.position.x,
+            _bobber.WaterLevel,
+            _bobber.BobberReturnPosition.position.z);
 
-                Vector3 targetPos = new Vector3(
-                    _bobber.BobberReturnPosition.position.x,
-                    _bobber.WaterLevel,
-                    _bobber.BobberReturnPosition.position.z);
-
-                _bobber.transform.position = Vector3.MoveTowards(
-                    _bobber.transform.position,
-                    targetPos,
-                    _bobber.ReelSpeed * Time.deltaTime);
-            }
-
-            yield return null;
-        }
+        _bobber.transform.position = Vector3.MoveTowards(
+            _bobber.transform.position,
+            targetPos,
+            _bobber.ReelSpeed * Time.deltaTime);
     }
 }
