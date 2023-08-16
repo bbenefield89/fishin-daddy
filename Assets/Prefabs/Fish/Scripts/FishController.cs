@@ -37,7 +37,7 @@ public class FishController : MonoBehaviour
         }
         else
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 
@@ -72,6 +72,7 @@ public class FishController : MonoBehaviour
 
         while (Vector3.Distance(transform.position, targetPos) > DesiredDistFromTargetPos)
         {
+            Vector3 prevPos = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, targetPos, SwimSpeed * Time.deltaTime);
             yield return null;
         }
@@ -87,6 +88,8 @@ public class FishController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
 
         transform.position = desiredPos + transform.forward * -1;
+
+        IsIdle = false;
         IsInterested = true;
     }
 

@@ -7,6 +7,7 @@ public class FishInterestedState : FishState
 
     public override void EnterState()
     {
+        _fish.StopAllCoroutines();
         _fish.StartCoroutine(Move());
     }
 

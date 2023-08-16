@@ -44,6 +44,7 @@ public class BobberInWaterState : BobberState
 
             if (FishController.Instance.IsInterested)  // Check some conditions again because coroutines
             {
+
                 FishController.Instance.Spawn();
             }
         }
