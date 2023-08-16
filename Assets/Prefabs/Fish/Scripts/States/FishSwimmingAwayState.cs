@@ -30,8 +30,6 @@ public class FishSwimmingAwayState : FishState
         _fish.StartCoroutine(SwimAway());
         yield return FadeAway();
         _fish.Reset();
-        // Fish should rotate to face correct swimming direction
-        // Found bug, fish "stutters" when begins swimming around bobber
     }
 
     private IEnumerator SwimAway()
@@ -40,21 +38,7 @@ public class FishSwimmingAwayState : FishState
         Vector3 bobberPos = BobberController.Instance.transform.position;
         Vector3 dirToSwim = (currentPos - bobberPos).normalized;
         Vector3 swimToPos = dirToSwim * 20f;
-        Func<bool> notAtSwimToPos = () =>
-        {
-            Vector3 fishPos = _fish.transform.position;
-            return Vector3.Distance(fishPos, swimToPos) > 0.1f;
-        };
-
-        while (notAtSwimToPos())
-        {
-            _fish.transform.position = Vector3.MoveTowards(
-                _fish.transform.position,
-                swimToPos,
-                _fish.SwimSpeed * Time.deltaTime);
-
-            yield return null;
-        }
+        yield return _fish.MoveRoutine(swimToPos, true);
     }
 
     private IEnumerator FadeAway()
