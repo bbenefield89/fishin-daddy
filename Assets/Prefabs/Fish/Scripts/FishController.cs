@@ -43,6 +43,7 @@ public class FishController : MonoBehaviour
 
     private void Start()
     {
+        BobberBeingReeledInState.OnFishShouldSwimAway += () => SetState(new FishSwimmingAwayState(this));
         _originalAlpha = GetComponentInChildren<Renderer>().material.color.a;
         SetState(new FishIdleState(this));
     }
@@ -63,6 +64,19 @@ public class FishController : MonoBehaviour
         _currentState.EnterState();
     }
 
+    public void Spawn()
+    {
+        Vector3 desiredPos = BobberController.Instance.transform.position + BobberController.Instance.transform.position.normalized * DistanceFromBobber;
+
+        Quaternion lookDir = Quaternion.LookRotation(BobberController.Instance.transform.position - desiredPos);
+        transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
+
+        transform.position = desiredPos + transform.forward * -1;
+
+        IsIdle = false;
+        IsInterested = true;
+    }
+
     public IEnumerator MoveRoutine(Vector3 targetPos, bool shouldRotate)
     {
         if (shouldRotate)
@@ -78,19 +92,6 @@ public class FishController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(TimeUntilNextSwim);
-    }
-
-    public void Spawn()
-    {
-        Vector3 desiredPos = BobberController.Instance.transform.position + BobberController.Instance.transform.position.normalized * DistanceFromBobber;
-
-        Quaternion lookDir = Quaternion.LookRotation(BobberController.Instance.transform.position - desiredPos);
-        transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
-
-        transform.position = desiredPos + transform.forward * -1;
-
-        IsIdle = false;
-        IsInterested = true;
     }
 
     public void Reset()
