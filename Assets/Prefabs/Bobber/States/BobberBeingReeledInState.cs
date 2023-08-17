@@ -1,10 +1,7 @@
-using System;
 using UnityEngine;
 
 public class BobberBeingReeledInState : BobberState
 {
-    public static event Action OnFishShouldSwimAway;
-
     public BobberBeingReeledInState(BobberController bobber) : base(bobber) { }
 
     public override void EnterState()
@@ -20,11 +17,11 @@ public class BobberBeingReeledInState : BobberState
             ReelBobberIn();
 
             if (
-                !FishController.Instance.IsIdle &&
-                !FishController.Instance.IsHooked &&
-                !FishController.Instance.IsSwimmingAway)
+                FishController.Instance.CurrentStateType != FishStateType.Idle &&
+                FishController.Instance.CurrentStateType != FishStateType.Hooked &&
+                FishController.Instance.CurrentStateType != FishStateType.SwimmingAway)
             {
-                OnFishShouldSwimAway?.Invoke();
+                _bobber.InvokeFishShouldSwimAway();
             }
         }
     }

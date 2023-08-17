@@ -1,5 +1,6 @@
 public abstract class FishState
 {
+    public abstract FishStateType State { get; }
     protected FishController _fish;
 
     public FishState(FishController fish)

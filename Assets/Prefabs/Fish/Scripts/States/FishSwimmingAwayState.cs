@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class FishSwimmingAwayState : FishState
 {
+    public override FishStateType State { get; } = FishStateType.SwimmingAway;
+
     public FishSwimmingAwayState(FishController fish) : base(fish) { }
 
     public override void EnterState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsSwimmingAway = true;
         _fish.StartCoroutine(BeginSwimAway());
     }
 
@@ -21,7 +22,6 @@ public class FishSwimmingAwayState : FishState
 
     public override void ExitState()
     {
-        _fish.IsSwimmingAway = false;
         _fish.StopAllCoroutines();
     }
 

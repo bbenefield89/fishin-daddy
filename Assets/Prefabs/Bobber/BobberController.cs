@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -28,6 +29,9 @@ public class BobberController : MonoBehaviour
     public float ReelSpeed = 5f;
     public float TimeAllowedToHookFish = 1f;
     public RandomNumberGenerator Rng;
+
+    public event Action OnFishShouldSwimAway;
+    public event Action OnFishShouldBeHooked;
     #endregion
 
     private void Awake()
@@ -75,5 +79,15 @@ public class BobberController : MonoBehaviour
     private void ReturnBobberToFishingPole()
     {
         SetState(new BobberIdleState(this));
+    }
+
+    public void InvokeFishShouldSwimAway()
+    {
+        OnFishShouldSwimAway?.Invoke();
+    }
+
+    public void InvokeFishShouldBeHooked()
+    {
+        OnFishShouldBeHooked?.Invoke();
     }
 }

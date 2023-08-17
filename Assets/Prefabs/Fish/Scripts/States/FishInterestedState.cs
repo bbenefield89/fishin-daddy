@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class FishInterestedState : FishState
 {
+    public override FishStateType State { get; } = FishStateType.Interested;
+
     public FishInterestedState(FishController fish) : base(fish) { }
 
     public override void EnterState()
@@ -13,16 +15,12 @@ public class FishInterestedState : FishState
 
     public override void UpdateState()
     {
-        if (_fish.IsNibbling)
-        {
-            _fish.SetState(new FishNibblingState(_fish));
-        }
+        //
     }
 
     public override void ExitState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsInterested = false;
     }
 
     private IEnumerator Move()
@@ -40,7 +38,7 @@ public class FishInterestedState : FishState
 
             if (shouldFishNibble)
             {
-                _fish.IsNibbling = true;
+                _fish.SetState(new FishNibblingState(_fish));
                 yield return null;
             }
             else

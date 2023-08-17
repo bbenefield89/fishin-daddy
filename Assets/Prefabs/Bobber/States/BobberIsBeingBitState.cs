@@ -28,7 +28,7 @@ public class BobberIsBeingBitState : BobberState
         else if (timeSinceBobberWasBit.TotalSeconds > _bobber.TimeAllowedToHookFish)
         {
             ShowBobber();
-            FishController.Instance.IsSwimmingAway = true;
+            BobberController.Instance.InvokeFishShouldSwimAway();
             _bobber.SetState(new BobberInWaterState(_bobber));
         }
     }
@@ -55,7 +55,7 @@ public class BobberIsBeingBitState : BobberState
 
     public void HookFish()
     {
-        FishController.Instance.IsHooked = true;
+        BobberController.Instance.InvokeFishShouldBeHooked();
         _bobber.SetState(new BobberInWaterState(_bobber));
     }
 }

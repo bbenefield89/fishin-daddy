@@ -3,17 +3,18 @@ using UnityEngine;
 
 public class FishHookedState : FishState
 {
+    public override FishStateType State { get; } = FishStateType.Hooked;
+
     public FishHookedState(FishController fish) : base(fish) { }
 
     public override void EnterState()
     {
-        _fish.IsHooked = true;
         _fish.StartCoroutine(FollowBobber());
     }
 
     public override void UpdateState()
     {
-        if (_fish.IsIdle)
+        if (_fish.CurrentStateType == FishStateType.Idle)
         {
             _fish.SetState(new FishIdleState(_fish));
         }
@@ -22,7 +23,6 @@ public class FishHookedState : FishState
     public override void ExitState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsHooked = false;
     }
 
     private IEnumerator FollowBobber()
