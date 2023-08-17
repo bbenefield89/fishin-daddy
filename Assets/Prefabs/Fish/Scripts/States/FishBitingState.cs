@@ -1,5 +1,7 @@
 public class FishBitingState : FishState
 {
+    public override FishStateType State { get; } = FishStateType.Biting;
+
     public FishBitingState(FishController fish) : base(fish) { }
 
     public override void EnterState()
@@ -9,11 +11,11 @@ public class FishBitingState : FishState
 
     public override void UpdateState()
     {
-        if (_fish.IsHooked)
+        if (_fish.CurrentStateType == FishStateType.Hooked)
         {
             _fish.SetState(new FishHookedState(_fish));
         }
-        else if (_fish.IsSwimmingAway)
+        else if (_fish.CurrentStateType == FishStateType.SwimmingAway)
         {
             _fish.SetState(new FishSwimmingAwayState(_fish));
         }
@@ -22,7 +24,6 @@ public class FishBitingState : FishState
     public override void ExitState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsBiting = false;
     }
 
     private void BiteHook()

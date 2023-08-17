@@ -1,20 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class FishIdleState : FishState
 {
+    public override FishStateType State { get; } = FishStateType.Idle;
+
     public FishIdleState(FishController fish) : base(fish) { }
 
     public override void EnterState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsIdle = true;
     }
 
     public override void UpdateState()
     {
-        if (_fish.IsInterested)
+        if (_fish.CurrentStateType == FishStateType.Interested)
         {
             _fish.SetState(new FishInterestedState(_fish));
         }
@@ -23,6 +20,5 @@ public class FishIdleState : FishState
     public override void ExitState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsIdle = false;
     }
 }

@@ -30,23 +30,19 @@ public class BobberInWaterState : BobberState
         _bobber.IsInWater = false;
     }
 
+    /**
+     * I think this method needs to live inside one of the Fish classes
+     * Possibly in Idle and check for if the bobber is in the water
+     */
     private IEnumerator AttractFishToBobber()
     {
-        while (FishController.Instance.IsIdle)
+        while (
+            FishController.Instance.CurrentStateType == FishStateType.Idle)
         {
+            // Weird name because we aren't checking for a bite but rather how often to try and spawn a fish
             float nextBiteCheckIntervalRandom = _bobber.Rng.Generate();
             yield return new WaitForSeconds(nextBiteCheckIntervalRandom);
-
-            FishController.Instance.IsInterested =
-                FishController.Instance.AlwaysInterested ?
-                FishController.Instance.AlwaysInterested :
-                RandomNumberGenerator.TruthyFalsyGenerator();
-
-            if (FishController.Instance.IsInterested)  // Check some conditions again because coroutines
-            {
-
-                FishController.Instance.Spawn();
-            }
+            FishController.Instance.CheckFishInterestInBobber();
         }
     }
 }

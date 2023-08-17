@@ -1,18 +1,23 @@
 using System.Collections;
 using UnityEngine;
 
+public enum FishStateType
+{
+    Idle,
+    Interested,
+    Nibbling,
+    Biting,
+    Hooked,
+    SwimmingAway
+}
+
 public class FishController : MonoBehaviour
 {
     public static FishController Instance { get; private set; }
-    private FishState _currentState;
 
-    [Header("State variables")]
-    public bool IsIdle = true;
-    public bool IsInterested = false;
-    public bool IsNibbling = false;
-    public bool IsBiting = false;
-    public bool IsHooked = false;
-    public bool IsSwimmingAway = false;
+    private float _originalAlpha;
+    private FishState _currentState;
+    public FishStateType CurrentStateType => _currentState.State;
 
     [Header("Movement/distance variables")]
     public float SwimSpeed = 1.0f;
@@ -21,8 +26,6 @@ public class FishController : MonoBehaviour
     public float DesiredDistFromTargetPos = 0.1f;
     public float DistanceFromBobber = 1f;
     public float FadeAwaySpeed = 0.5f;
-
-    private float _originalAlpha;
 
     [Header("Exposed variables for easier debugging")]
     public bool AlwaysInterested = false;
@@ -43,14 +46,15 @@ public class FishController : MonoBehaviour
 
     private void Start()
     {
-        BobberBeingReeledInState.OnFishShouldSwimAway += () => SetState(new FishSwimmingAwayState(this));
+        SetupBobberToFishEvents();
         _originalAlpha = GetComponentInChildren<Renderer>().material.color.a;
         SetState(new FishIdleState(this));
     }
 
-    private void Update()
+    private void SetupBobberToFishEvents()
     {
-        _currentState.UpdateState();
+        BobberController.Instance.OnFishShouldSwimAway += () => SetState(new FishSwimmingAwayState(this));
+        BobberController.Instance.OnFishShouldBeHooked += () => SetState(new FishHookedState(this));
     }
 
     public void SetState(FishState state)
@@ -64,17 +68,9 @@ public class FishController : MonoBehaviour
         _currentState.EnterState();
     }
 
-    public void Spawn()
+    private void Update()
     {
-        Vector3 desiredPos = BobberController.Instance.transform.position + BobberController.Instance.transform.position.normalized * DistanceFromBobber;
-
-        Quaternion lookDir = Quaternion.LookRotation(BobberController.Instance.transform.position - desiredPos);
-        transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
-
-        transform.position = desiredPos + transform.forward * -1;
-
-        IsIdle = false;
-        IsInterested = true;
+        _currentState.UpdateState();
     }
 
     public IEnumerator MoveRoutine(Vector3 targetPos, bool shouldRotate)
@@ -96,15 +92,20 @@ public class FishController : MonoBehaviour
 
     public void Reset()
     {
-        if (IsHooked)
+        if (CurrentStateType == FishStateType.Hooked)
         {
             FishCounterCanvas.Instance.UpdateFishCounterUI();
         }
 
-        transform.position = new Vector3(0f, -1f, 0f);
-        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        ResetPosition();
         ResetAlpha();
         SetState(new FishIdleState(this));
+    }
+
+    private void ResetPosition()
+    {
+        transform.position = new Vector3(0f, -1f, 0f);
+        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     private void ResetAlpha()
@@ -114,5 +115,30 @@ public class FishController : MonoBehaviour
 
         fishColor.a = _originalAlpha;
         fishRenderer.material.color = fishColor;
+    }
+
+    public void CheckFishInterestInBobber()
+    {
+        bool isFishInterested = AlwaysInterested ?
+            AlwaysInterested :
+            RandomNumberGenerator.TruthyFalsyGenerator();
+
+        if (isFishInterested)
+        {
+            Spawn();
+        }
+    }
+
+    public void Spawn()
+    {
+        Vector3 desiredPos = BobberController.Instance.transform.position + BobberController.Instance.transform.position.normalized * DistanceFromBobber;
+        Quaternion lookDir = Quaternion.LookRotation(BobberController.Instance.transform.position - desiredPos);
+
+        transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
+        transform.position = desiredPos + transform.forward * -1;
+
+        //IsIdle = false;
+        //IsInterested = true;
+        SetState(new FishInterestedState(this));
     }
 }

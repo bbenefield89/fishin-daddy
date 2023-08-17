@@ -1,9 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FishNibblingState : FishState
 {
+    public override FishStateType State { get; } = FishStateType.Nibbling;
+
     public FishNibblingState(FishController fish) : base(fish) { }
 
     public override void EnterState()
@@ -13,16 +14,12 @@ public class FishNibblingState : FishState
 
     public override void UpdateState()
     {
-        if (_fish.IsBiting)
-        {
-            _fish.SetState(new FishBitingState(_fish));
-        }
+        //
     }
 
     public override void ExitState()
     {
         _fish.StopAllCoroutines();
-        _fish.IsNibbling = false;
     }
 
     private IEnumerator InteractWithBobber()
@@ -39,7 +36,7 @@ public class FishNibblingState : FishState
 
             if (shouldFishBite)
             {
-                _fish.IsBiting = true;
+                _fish.SetState(new FishBitingState(_fish));
                 yield return null;
             }
             else
