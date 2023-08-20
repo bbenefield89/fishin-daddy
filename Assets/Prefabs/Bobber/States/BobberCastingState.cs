@@ -1,9 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BobberCastingState : BobberState
 {
+    public override BobberStateType State => BobberStateType.Casting;
+
     public BobberCastingState(BobberController bobber) : base(bobber) { }
 
     public override void EnterState()
@@ -13,24 +14,19 @@ public class BobberCastingState : BobberState
 
     public override void UpdateState()
     {
-        if (_bobber.IsInWater)
-        {
-            _bobber.SetState(new BobberInWaterState(_bobber));
-        }
+        //
     }
 
     public override void ExitState()
     {
         _bobber.StopAllCoroutines();
-        _bobber.IsCasting = false;
     }
 
     private IEnumerator CastBobber()
     {
         yield return MoveBobber();
         yield return DropBobberToWater();
-
-        _bobber.IsInWater = true;
+        _bobber.SetState(new BobberInWaterState(_bobber));
     }
 
     private IEnumerator MoveBobber()

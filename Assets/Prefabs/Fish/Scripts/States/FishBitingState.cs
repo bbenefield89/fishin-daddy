@@ -28,7 +28,9 @@ public class FishBitingState : FishState
 
     private void BiteHook()
     {
-        BobberController.Instance.IsBeingBit = true;
+        //BobberController.Instance.IsBeingBit = true;
+        BobberController.Instance.SetState(
+            new BobberIsBeingBitState(BobberController.Instance));
         FishHookedAudioController.Instance.PlayFishHookedAudio();
     }
 }

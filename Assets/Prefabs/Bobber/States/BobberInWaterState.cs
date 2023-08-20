@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class BobberInWaterState : BobberState
 {
+    public override BobberStateType State => BobberStateType.InWater;
+
     public BobberInWaterState(BobberController bobber) : base(bobber) { }
 
     public override void EnterState()
     {
-        _bobber.IsInWater = true;
         _bobber.transform.parent = null;
         _bobber.StartCoroutine(AttractFishToBobber());
     }
@@ -16,18 +17,13 @@ public class BobberInWaterState : BobberState
     {
         if (Input.GetMouseButton(1))
         {
-            _bobber.IsBeingReeledIn = true;
             _bobber.SetState(new BobberBeingReeledInState(_bobber));
-        }
-        else if (_bobber.IsBeingBit)
-        {
-            _bobber.SetState(new BobberIsBeingBitState(_bobber));
         }
     }
 
     public override void ExitState()
     {
-        _bobber.IsInWater = false;
+        _bobber.StopAllCoroutines();
     }
 
     /**
