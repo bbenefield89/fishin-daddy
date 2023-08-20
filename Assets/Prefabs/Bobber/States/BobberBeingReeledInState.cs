@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class BobberBeingReeledInState : BobberState
 {
+    public override BobberStateType State => BobberStateType.BeingReeledIn;
+
     public BobberBeingReeledInState(BobberController bobber) : base(bobber) { }
 
     public override void EnterState()
     {
-        _bobber.IsBeingReeledIn = true;
+        //
     }
 
     public override void UpdateState()
@@ -28,7 +30,7 @@ public class BobberBeingReeledInState : BobberState
 
     public override void ExitState()
     {
-        _bobber.IsBeingReeledIn = false;
+        //
     }
 
     private void ReelBobberIn()

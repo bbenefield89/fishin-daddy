@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class BobberIsBeingBitState : BobberState
 {
+    public override BobberStateType State => BobberStateType.BeingBit;
     private DateTime _timeBobberWasBit;
 
     public BobberIsBeingBitState(BobberController bobber) : base(bobber) { }
 
     public override void EnterState()
     {
-        _bobber.IsBeingBit = true;
         _timeBobberWasBit = DateTime.UtcNow;
         _bobber.Exclamations.SetActive(true);
         HideBobber();
@@ -35,7 +35,6 @@ public class BobberIsBeingBitState : BobberState
 
     public override void ExitState()
     {
-        _bobber.IsBeingBit = false;
         _bobber.Exclamations.SetActive(false);
     }
 

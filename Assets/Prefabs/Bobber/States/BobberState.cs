@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public abstract class BobberState
 {
+    public abstract BobberStateType State{ get; }
     protected BobberController _bobber;
 
     public BobberState(BobberController bobber)

@@ -2,25 +2,30 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+public enum BobberStateType
+{
+    Idle,
+    Casting,
+    InWater,
+    BeingReeledIn,
+    BeingBit
+}
+
 public class BobberController : MonoBehaviour
 {
     #region Props
     public static BobberController Instance { get; private set; }
     private BobberState _currentState;
+    public BobberStateType CurrentStateType => _currentState.State;
 
-    [Header("State vars")]
-    public bool IsIdle = true;
-    public bool IsCasting = false;
-    public bool IsInWater = false;
-    public bool IsBeingReeledIn = false;
-    public bool IsBeingBit = false;
-
+    [Header("----- Game Objects -----")]
     [Tooltip("GameObject that holds a reference to the position the bobber should be when not casted")]
     public Transform BobberReturnPosition;
     public GameObject Exclamations;
     public AudioSource FishHookedAudio;
     public Transform PcModel;
 
+    [Header("----- Settings -----")]
     [Tooltip("How far down on the Y axis the bobber should drop after casting")]
     public float WaterLevel = 0f;
     public float CastDistance = 5f;
