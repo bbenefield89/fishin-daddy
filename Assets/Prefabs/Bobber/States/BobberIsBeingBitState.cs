@@ -40,9 +40,9 @@ public class BobberIsBeingBitState : BobberState
 
     private void HideBobber()
     {
-        Vector3 pos = _bobber.transform.position;
-        Vector3 newPos = new Vector3(pos.x, _bobber.WaterLevel - 1f, pos.z);
-        _bobber.transform.position = newPos;
+        //Vector3 pos = _bobber.transform.position;
+        //Vector3 newPos = new Vector3(pos.x, _bobber.WaterLevel - 1f, pos.z);
+        //_bobber.transform.position = newPos;
     }
 
     private void ShowBobber()
@@ -54,7 +54,8 @@ public class BobberIsBeingBitState : BobberState
 
     public void HookFish()
     {
-        BobberController.Instance.InvokeFishShouldBeHooked();
-        _bobber.SetState(new BobberInWaterState(_bobber));
+        //BobberController.Instance.InvokeFishShouldBeHooked();
+        FishController.Instance.SetState(new FishFightingState(FishController.Instance));
+        _bobber.SetState(new BobberHookedFishState(_bobber));
     }
 }

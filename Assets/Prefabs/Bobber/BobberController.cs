@@ -8,7 +8,8 @@ public enum BobberStateType
     Casting,
     InWater,
     BeingReeledIn,
-    BeingBit
+    BeingBit,
+    HookedFish,
 }
 
 public class BobberController : MonoBehaviour
