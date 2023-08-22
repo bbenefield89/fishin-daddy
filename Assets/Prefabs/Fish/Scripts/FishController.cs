@@ -24,7 +24,7 @@ public class FishController : MonoBehaviour
 
     [Header("Movement/distance variables")]
     public float SwimSpeed = 1.0f;
-    public float FightSwimSpeed = 3.0f;
+    public float FightSwimSpeed = 1.5f;
     public float TimeUntilNextSwim = 1.0f;
     public float SwimDistance = 2.0f;
     public float DesiredDistFromTargetPos = 0.1f;
@@ -50,15 +50,8 @@ public class FishController : MonoBehaviour
 
     private void Start()
     {
-        SetupBobberToFishEvents();
         _originalAlpha = GetComponentInChildren<Renderer>().material.color.a;
         SetState(new FishIdleState(this));
-    }
-
-    private void SetupBobberToFishEvents()
-    {
-        //BobberController.Instance.OnFishShouldSwimAway += () => SetState(new FishSwimmingAwayState(this));
-        //BobberController.Instance.OnFishShouldBeHooked += () => SetState(new FishHookedState(this));
     }
 
     public void SetState(FishState state)
@@ -77,7 +70,7 @@ public class FishController : MonoBehaviour
         _currentState.UpdateState();
     }
 
-    public IEnumerator MoveRoutine(Vector3 targetPos, bool shouldRotate, float speed = 0f)
+    public IEnumerator MoveRoutine(Vector3 targetPos, bool shouldRotate, float speed = -1f)
     {
         if (shouldRotate)
         {
@@ -90,7 +83,7 @@ public class FishController : MonoBehaviour
         while (hasNotArrivedAtTargetPos())
         {
             Vector3 prevPos = transform.position;
-            float speedToSwim = speed == 0f ? SwimSpeed : speed;
+            float speedToSwim = speed == -1f ? SwimSpeed : speed;
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 targetPos,
@@ -153,7 +146,7 @@ public class FishController : MonoBehaviour
         SetState(new FishInterestedState(this));
     }
 
-    public IEnumerator SwimAway(float distanceToSwim, float speedToSwim = 0f)
+    public IEnumerator SwimAway(float distanceToSwim, float speedToSwim = -1f)
     {
         Vector3 currentPos = transform.position;
         Vector3 bobberPos = BobberController.Instance.transform.position;
