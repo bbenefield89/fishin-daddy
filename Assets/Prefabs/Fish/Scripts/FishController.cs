@@ -141,8 +141,6 @@ public class FishController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, lookDir.eulerAngles.y + 90, 0f);
         transform.position = desiredPos + transform.forward * -1;
 
-        //IsIdle = false;
-        //IsInterested = true;
         SetState(new FishInterestedState(this));
     }
 
