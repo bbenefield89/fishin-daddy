@@ -18,19 +18,21 @@ public class BobberBeingReeledInState : BobberState
             _bobber.Exclamations.SetActive(false);
             ReelBobberIn();
 
-            if (
-                FishController.Instance.CurrentStateType != FishStateType.Idle &&
-                FishController.Instance.CurrentStateType != FishStateType.Hooked &&
-                FishController.Instance.CurrentStateType != FishStateType.SwimmingAway)
+            if (FishController.Instance.CheckIfFishShouldSwimAway())
             {
-                _bobber.InvokeFishShouldSwimAway();
+                FishController.Instance.SetState(
+                    new FishSwimmingAwayState(FishController.Instance));
             }
+        }
+        else
+        {
+            _bobber.SetState(new BobberInWaterState(_bobber));
         }
     }
 
     public override void ExitState()
     {
-        //
+        _bobber.StopAllCoroutines();
     }
 
     private void ReelBobberIn()
