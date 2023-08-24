@@ -23,9 +23,8 @@ public class BobberHookedFishState : BobberState
         {
             if (_currentLineTension >= _bobber.MaxLineTension)
             {
-                // line snaps
-                //_bobber.SetState(new BobberLineSnappedState(_bobber));
-                Debug.Log("Line snapped");
+                _bobber.SetState(new BobberIdleState(_bobber));
+                FishController.Instance.SetState(new FishSwimmingAwayState(FishController.Instance));
             }
             else  // Increase line tension
             {

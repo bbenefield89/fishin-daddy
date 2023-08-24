@@ -147,10 +147,14 @@ public class FishController : MonoBehaviour
     public IEnumerator SwimAway(float distanceToSwim, float speedToSwim = -1f)
     {
         Vector3 currentPos = transform.position;
-        Vector3 bobberPos = BobberController.Instance.transform.position;
-        Vector3 dirToSwim = (currentPos - bobberPos).normalized;
-        Vector3 targetPos = currentPos + new Vector3(dirToSwim.x, transform.position.y, dirToSwim.z);
-        yield return MoveRoutine(targetPos * distanceToSwim, true, speedToSwim);
+        Vector3 pcPos = PCModel.Instance.transform.position;
+        Vector3 dirToSwim = (currentPos - pcPos).normalized;
+        Vector3 intermediatePos = currentPos + dirToSwim * distanceToSwim;
+        Vector3 targetPos = new Vector3(
+            intermediatePos.x,
+            currentPos.y,
+            intermediatePos.z);
+        yield return MoveRoutine(targetPos, true, speedToSwim);
     }
 
     public bool CheckIfFishIsHooked()
