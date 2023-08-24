@@ -25,18 +25,9 @@ public class FishSwimmingAwayState : FishState
 
     private IEnumerator BeginSwimAway()
     {
-        _fish.StartCoroutine(SwimAway());
+        _fish.StartCoroutine(_fish.SwimAway(20f));
         yield return FadeAway();
         _fish.Reset();
-    }
-
-    private IEnumerator SwimAway()
-    {
-        Vector3 currentPos = _fish.transform.position;
-        Vector3 bobberPos = BobberController.Instance.transform.position;
-        Vector3 dirToSwim = (currentPos - bobberPos).normalized;
-        Vector3 swimToPos = dirToSwim * 20f;
-        yield return _fish.MoveRoutine(swimToPos, true);
     }
 
     private IEnumerator FadeAway()
