@@ -34,9 +34,9 @@ public class BobberController : MonoBehaviour
     public float ArcHeight = 1f;
     public float ReelSpeed = 5f;
     public float TimeAllowedToHookFish = 1f;
-    public float MaxLineTension = 10f;
-    public float LineTensionIncreaseSpeed = 10f;
-    public float LineTensionDecreaseSpeed = 5f;
+    public float MaxLineTension = 1f;
+    public float LineTensionIncreaseSpeed = 1f;
+    public float LineTensionDecreaseSpeed = 0.5f;
     public RandomNumberGenerator Rng;
 
     public event Action OnFishShouldSwimAway;
