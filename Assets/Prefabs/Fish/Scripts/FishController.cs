@@ -22,7 +22,7 @@ public class FishController : MonoBehaviour
     private FishState _currentState;
     public FishStateType CurrentStateType => _currentState.State;
 
-    [Header("Movement/distance variables")]
+    [Header("----- Settings -----")]
     public float SwimSpeed = 1.0f;
     public float FightSwimSpeed = 1.5f;
     public float TimeUntilNextSwim = 1.0f;
@@ -30,8 +30,9 @@ public class FishController : MonoBehaviour
     public float DesiredDistFromTargetPos = 0.1f;
     public float DistanceFromBobber = 1f;
     public float FadeAwaySpeed = 0.5f;
+    public RandomNumberGenerator Rng;
 
-    [Header("Exposed variables for easier debugging")]
+    [Header("----- Exposed variables for easier debugging -----")]
     public bool AlwaysInterested = false;
     public bool AlwaysNibble = false;
     public bool AlwaysBite = false;
@@ -96,10 +97,10 @@ public class FishController : MonoBehaviour
 
     public void Reset()
     {
-        if (CurrentStateType == FishStateType.Hooked)
-        {
-            FishCounterCanvas.Instance.UpdateFishCounterUI();
-        }
+        //if (CurrentStateType == FishStateType.Hooked)
+        //{
+        //    FishCounterCanvas.Instance.UpdateFishCounterUI();
+        //}
 
         ResetPosition();
         ResetAlpha();

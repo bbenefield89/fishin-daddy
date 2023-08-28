@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bobber
   - Ground
+  - Fish
   layers:
   - Default
   - TransparentFX
