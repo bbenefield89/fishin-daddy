@@ -97,11 +97,6 @@ public class FishController : MonoBehaviour
 
     public void Reset()
     {
-        //if (CurrentStateType == FishStateType.Hooked)
-        //{
-        //    FishCounterCanvas.Instance.UpdateFishCounterUI();
-        //}
-
         ResetPosition();
         ResetAlpha();
         SetState(new FishIdleState(this));
