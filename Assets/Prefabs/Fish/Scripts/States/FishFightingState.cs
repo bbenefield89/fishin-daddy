@@ -10,6 +10,7 @@ public class FishFightingState : FishState
 
     public override void EnterState()
     {
+        Debug.Log("Fish Fighting");
         _fish.StartCoroutine(BeginFighting());
     }
 
@@ -25,7 +26,11 @@ public class FishFightingState : FishState
 
     private IEnumerator BeginFighting()
     {
-        while (true)
+        float startTime = Time.time;
+        float timeUntilRest = _fish.Rng.Generate();
+        float endTime = startTime + timeUntilRest;
+
+        while (Time.time < endTime)
         {
             if (_fightingCoroutine != null)
             {
@@ -52,5 +57,7 @@ public class FishFightingState : FishState
 
             yield return null;
         }
+
+        _fish.SetState(new FishRestingState(_fish));
     }
 }

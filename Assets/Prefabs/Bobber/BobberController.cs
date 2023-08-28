@@ -38,9 +38,6 @@ public class BobberController : MonoBehaviour
     public float LineTensionIncreaseSpeed = 1f;
     public float LineTensionDecreaseSpeed = 0.5f;
     public RandomNumberGenerator Rng;
-
-    public event Action OnFishShouldSwimAway;
-    public event Action OnFishShouldBeHooked;
     #endregion
 
     private void Awake()
@@ -76,27 +73,8 @@ public class BobberController : MonoBehaviour
         _currentState.EnterState();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag(Tags.GROUND))
-        {
-            ReturnBobberToFishingPole();
-            FishController.Instance.Reset();
-        }
-    }
-
-    private void ReturnBobberToFishingPole()
+    public void Reset()
     {
         SetState(new BobberIdleState(this));
-    }
-
-    public void InvokeFishShouldSwimAway()
-    {
-        OnFishShouldSwimAway?.Invoke();
-    }
-
-    public void InvokeFishShouldBeHooked()
-    {
-        OnFishShouldBeHooked?.Invoke();
     }
 }

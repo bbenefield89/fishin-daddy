@@ -21,9 +21,9 @@ public class FishCounterCanvas : MonoBehaviour
         }
     }
 
-    public void UpdateFishCounterUI()
+    public void UpdateFishCounterUI(int amount)
     {
-        fishCaughtCount += 1;
+        fishCaughtCount += amount;
         fishCounterText.text = "Fish: " + fishCaughtCount.ToString();
     }
 }
