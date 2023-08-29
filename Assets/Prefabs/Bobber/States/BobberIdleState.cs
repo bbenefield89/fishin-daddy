@@ -11,6 +11,7 @@ public class BobberIdleState : BobberState
         _bobber.StopAllCoroutines();
         _bobber.transform.position = _bobber.BobberReturnPosition.position;
         _bobber.transform.parent = _bobber.BobberReturnPosition;
+        FishingPole.Instance.StopReelingSfx();
     }
 
     public override void UpdateState()

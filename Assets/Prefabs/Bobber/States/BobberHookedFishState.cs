@@ -16,24 +16,13 @@ public class BobberHookedFishState : BobberState
 
     public override void UpdateState()
     {
-        FishStateType fishStateType =
-            FishController.Instance.CurrentStateType;
-
-        if (
-            Input.GetMouseButton(1)
-            && fishStateType == FishStateType.Fighting)
+        if (Input.GetMouseButton(1))
         {
-            if (_currentLineTension >= _bobber.MaxLineTension)
-            {
-                SnapLine();
-            }
-            else  // Increase line tension
-            {
-                UpdateLineTension(true);
-            }
+            BeginReelingInFish();
         }
         else  // Decrease line tension
         {
+            FishingPole.Instance.StopReelingSfx();
             UpdateLineTension(false);
         }
     }
@@ -54,6 +43,28 @@ public class BobberHookedFishState : BobberState
             .gameObject;
 
         _lineTensionBar.SetActive(true);
+    }
+
+    private void BeginReelingInFish()
+    {
+        FishStateType fishStateType = FishController.Instance.CurrentStateType;
+        FishingPole.Instance.PlayReelingSfx();
+
+        if (fishStateType == FishStateType.Fighting)
+        {
+            if (_currentLineTension >= _bobber.MaxLineTension)
+            {
+                SnapLine();
+            }
+            else  // Increase line tension
+            {
+                UpdateLineTension(true);
+            }
+        }
+        else  // Decrease line Tension
+        {
+            UpdateLineTension(false);
+        }
     }
 
     private void SnapLine()
