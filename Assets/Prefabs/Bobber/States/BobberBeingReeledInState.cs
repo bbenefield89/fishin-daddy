@@ -16,6 +16,7 @@ public class BobberBeingReeledInState : BobberState
         if (Input.GetMouseButton(1))
         {
             _bobber.Exclamations.SetActive(false);
+            FishingPole.Instance.PlayReelingSfx();
             ReelBobberIn();
 
             if (FishController.Instance.CheckIfFishShouldSwimAway())
@@ -26,6 +27,7 @@ public class BobberBeingReeledInState : BobberState
         }
         else
         {
+            FishingPole.Instance.StopReelingSfx();
             _bobber.SetState(new BobberInWaterState(_bobber));
         }
     }
